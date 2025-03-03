@@ -1,0 +1,15 @@
+@import "tailwindcss";
+@plugin "daisyui" {
+  themes: all;
+}
+
+:root {
+  --displayheight: calc(100vh - 8.5vh);
+  --coursetableH: calc(100vh - 33.3vh);
+  --tlistH: calc(100vh - 56vh);
+  --tprolistH: calc(100vh - 52.1vh);
+}
+
+@theme {
+  --color-theme: #FFAC59;
+}
