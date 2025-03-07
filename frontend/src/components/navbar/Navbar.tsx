@@ -1,14 +1,23 @@
 import React, { useRef } from 'react'
 import Theme from './Theme'
 import Profile from './profile/Profile';
+import { useNavigate } from 'react-router-dom';
 
 const Navbar:React.FC = () => {
 
     const modalRef = useRef<HTMLDialogElement | null>(null);
+    const navigate = useNavigate();
+
 
     const openProfile = () => {
         modalRef.current?.showModal();
     };
+
+    const handleLogout = () => {
+        localStorage.removeItem("token"); // หรือลบจาก sessionStorage
+        console.log("Remove token from storage");
+        navigate("/login"); // Redirect ไปหน้า Login
+      };
 
     return (
         <div className="navbar md:flex hidden bg-base-100 shadow-sm border-b border-gray-300">
@@ -63,7 +72,7 @@ const Navbar:React.FC = () => {
                         </a>
                         </li>
                         <li><a>Settings</a></li>
-                        <li><a href='/login'>Logout</a></li>
+                        <li><a onClick={handleLogout}>Logout</a></li>
                     </ul>
                 </div>
             </div>

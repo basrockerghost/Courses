@@ -3,7 +3,7 @@ import Breadstd from './Breadstd'
 import Sboard from './Sboard'
 import Smenulist from './Smenulist'
 import Slist from './Slist'
-import Saddmodal from './Saddmodal'
+import Saddmodal from './AddStudent/Saddmodal'
 
 const Student:React.FC = () => {
     return (

@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
 const UserSchema = new mongoose.Schema({
-    studentID: { 
+    personalID: { 
         type: String, 
         required: true, 
         unique: true, 
@@ -20,10 +20,11 @@ const UserSchema = new mongoose.Schema({
     },
     email: { 
         type: String, 
-        required: true, 
-        unique: true, 
+        unique: true,
+        sparse: true,
         trim: true, 
-        match: [/^\S+@\S+\.\S+$/, 'Invalid email format']
+        match: [/^\S+@\S+\.\S+$/, 'Invalid email format'],
+        default: null
     },
     password: { 
         type: String, 
@@ -31,18 +32,30 @@ const UserSchema = new mongoose.Schema({
     },
     role: { 
         type: String, 
-        enum: ['user', 'admin'], 
-        default: 'user' 
-    },
-    status: { 
-        type: String, 
-        enum: ['active', 'inactive'], 
-        default: 'active' 
+        enum: ['student', 'teacher', 'admin'], 
+        default: 'student' 
     },
     profileImage: { 
         type: String, 
         default: '' 
     },
+    credits: {
+        type: Number,
+        default: 0
+    },
+    GPA: {
+        type: Number,
+        min: 0,
+        max: 4.0,
+        default: 0.0
+    },
+    subjects: [
+        {
+            subjectID: { type: String, required: true },
+            subjectName: { type: String, required: true },
+            credit: { type: Number, required: true }
+        }
+    ]
 }, { timestamps: true });
 
 // **แฮชรหัสผ่านก่อนบันทึก**

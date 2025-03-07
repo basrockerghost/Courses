@@ -1,5 +1,6 @@
 import React from 'react'
 import logo from '../../assets/logoคณะ.png'
+import Loginform from './Loginform'
 
 const Login:React.FC = () => {
     return (
@@ -11,22 +12,7 @@ const Login:React.FC = () => {
                 </div>
                 <div className="card bg-base-100 md:w-sm shrink-0 shadow-md border border-theme">
                     <div className="card-body">
-                        <fieldset className="fieldset">
-                            <p className='md:text-2xl text-xl md:font-medium font mb-4'>Login to Com-Sci</p>
-                            <label className="fieldset-label">UserID</label>
-                            <input type="text" className="input border-theme" placeholder="UserID" />
-                            <label className="fieldset-label">Password</label>
-                            <input type="password" className="input border-theme" placeholder="Password" />
-                            <div className='flex justify-between items-center'>
-                                <a className="link link-hover" href=''>
-                                    Forgot password?
-                                </a>
-                                <a className="link link-hover" href="/register">
-                                    Create account
-                                </a>
-                            </div>
-                            <a role='button' className="btn mt-4 bg-theme text-white" href='/dashboard'>Login</a>
-                        </fieldset>
+                        <Loginform/>
                     </div>
                 </div>
             </div>

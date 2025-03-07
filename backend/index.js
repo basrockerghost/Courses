@@ -3,6 +3,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const authRoutes = require('./routes/authRoutes');
+const addStudent = require('./routes/addStudent');
+const addFileStd = require('./routes/addFileStd');
 
 const app = express();
 app.use(express.json());
@@ -16,6 +18,8 @@ mongoose.connect(process.env.MONGO_URI, {
       .catch(err => console.error('❌ MongoDB Connection Failed:', err));
 
 app.use('/api/auth', authRoutes);
+app.use('/api/add', addStudent);
+app.use('/api/upload', addFileStd);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
