@@ -1,12 +1,49 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
+import { useSubjectContext } from '../../../api/SubjectProvider';
 
 const Createsubject:React.FC = () => {
 
     const modalRef = useRef<HTMLDialogElement | null>(null);
+    
+    const { addSubject, loading, error, success } = useSubjectContext();
+
+    const [data, setData] = useState({
+        subjectID: "",
+        subjectnameTH: "",
+        subjectnameEN: "",
+        credits: "",
+        description: "",
+    })
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        setData({
+            ...data,
+            [e.target.id]: e.target.value,
+        });
+    };
+
+    const handleAdd = async (e: React.FormEvent) => {
+        e.preventDefault();
+        await addSubject({
+            subjectID: data.subjectID,
+            subjectnameTH: data.subjectnameTH,
+            subjectnameEN: data.subjectnameEN,
+            credits: Number(data.credits),
+            description: data.description,
+        });
         
-            const CreateSubjectModal = () => {
-                modalRef.current?.showModal();
-            };
+        setData({
+            subjectID: "",
+            subjectnameTH: "",
+            subjectnameEN: "",
+            credits: "",
+            description: "",
+        });
+    };
+
+    const CreateSubjectModal = () => {
+        modalRef.current?.showModal();
+    };
 
     return (
         <div className='flex flex-rows gap-x-4 items-center'>
@@ -22,25 +59,27 @@ const Createsubject:React.FC = () => {
                     <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
                     </form>
                     <h3 className="font-bold text-lg">เพิ่มวิชา</h3>
-                    <div className='flex flex-col gap-y-2 mt-4'>
-                        <label htmlFor="sname">ชื่อวิชา (th)</label>
-                        <input type="text" id='sname' className='input input-neutral w-full border-theme ' />
-                        <label htmlFor="snameen">ชื่อวิชา (en)</label>
-                        <input type="text" id='snameen' className='input input-neutral w-full border-theme ' />
+                    <form className='flex flex-col gap-y-2 mt-4' onSubmit={handleAdd}>
                         <label htmlFor="">รหัสวิชา</label>
-                        <input type="text" id='scode' className='input input-neutral w-full border-theme ' />
+                        <input type="text" id='subjectID' className='input input-neutral w-full border-theme ' value={data.subjectID} onChange={handleChange} required />
+                        <label htmlFor="sname">ชื่อวิชา (th)</label>
+                        <input type="text" id='subjectnameTH' className='input input-neutral w-full border-theme ' value={data.subjectnameTH} onChange={handleChange} required />
+                        <label htmlFor="snameen">ชื่อวิชา (en)</label>
+                        <input type="text" id='subjectnameEN' className='input input-neutral w-full border-theme ' value={data.subjectnameEN} onChange={handleChange} required />
                         <label htmlFor="scredit">หน่วยกิต</label>
-                        <input type="text" id='scredit' className='input input-neutral w-full border-theme ' />
-                        <div className="modal-action gap-x-4">
-                            <form method="dialog">
-                                {/* if there is a button, it will close the modal */}
-                                <div className='flex gap-x-4'>
-                                    <button className="btn">Close</button>
-                                    <button className="btn">Add</button>
-                                </div>
-                            </form>
+                        <input type="number" id='credits' className='input input-neutral w-full border-theme ' value={data.credits} onChange={handleChange} required />
+                        <label htmlFor="">description</label>
+                        <textarea id='description' className='textarea textarea-neutral w-full border-theme' value={data.description} onChange={handleChange} />
+
+                        {error && <p className="text-red-500 mt-2">{error}</p>}
+                        {success && <p className="text-green-500 mt-2">{success}</p>}
+
+                        <div className='flex justify-end mt-4 gap-x-4'>
+                            <button type='submit' className="btn" disabled={loading}>
+                                {loading ? 'Loading...' : 'Create'}
+                            </button>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </dialog>
         </div>

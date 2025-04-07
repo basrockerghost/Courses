@@ -1,12 +1,39 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
+import { useLocation } from 'react-router-dom';
+import api from '../../../api/Api'
+import { useGroupContext } from '../../../api/GroupProvider';
 
 const Creategroup:React.FC = () => {
 
     const modalRef = useRef<HTMLDialogElement | null>(null);
+
+    const { addGroup, loading, success, error } = useGroupContext();
+
+    const [data, setData] = useState({
+        groupnameTH: '',
+        groupnameEN: '',
+    })
     
-        const CreateGroupModal = () => {
-            modalRef.current?.showModal();
-        };
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setData({ ...data, [e.target.id]: e.target.value });
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        await addGroup({
+            groupnameTH: data.groupnameTH,
+            groupnameEN: data.groupnameEN,
+        });
+
+        setData({
+            groupnameTH: '',
+            groupnameEN: '',
+        });
+    };
+
+    const CreateGroupModal = () => {
+        modalRef.current?.showModal();
+    };
 
     return (
         <div className='flex flex-rows gap-x-4 items-center'>
@@ -22,21 +49,21 @@ const Creategroup:React.FC = () => {
                     <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
                     </form>
                     <h3 className="font-bold text-lg">สร้างกลุ่มวิชา</h3>
-                    <div className='flex flex-col gap-y-2 mt-4'>
-                        <label htmlFor="gname">ชื่อกลุ่มวิชา (th)</label>
-                        <input type="text" id='gname' className='input input-neutral w-full border-theme ' />
-                        <label htmlFor="gnameen">ชื่อกลุ่มวิชา (en)</label>
-                        <input type="text" id='gnameen' className='input input-neutral w-full border-theme ' />
-                        <div className="modal-action gap-x-4">
-                            <form method="dialog">
-                                {/* if there is a button, it will close the modal */}
-                                <div className='flex gap-x-4'>
-                                    <button className="btn">Close</button>
-                                    <button className="btn">Add</button>
-                                </div>
-                            </form>
+                    <form className='flex flex-col gap-y-2 mt-4' onSubmit={handleSubmit}>
+                        <label htmlFor="groupnameTH">ชื่อกลุ่มวิชา (th)</label>
+                        <input type="text" id='groupnameTH' className='input input-neutral w-full border-theme ' value={data.groupnameTH} onChange={handleChange} required />
+                        <label htmlFor="groupnameEN">ชื่อกลุ่มวิชา (en)</label>
+                        <input type="text" id='groupnameEN' className='input input-neutral w-full border-theme ' value={data.groupnameEN} onChange={handleChange} required />
+
+                        {error && <p className="text-red-500 mt-2">{error}</p>}
+                        {success && <p className="text-green-500 mt-2">{success}</p>}
+
+                        <div className='flex justify-end mt-4 gap-x-4'>
+                            <button type='submit' className="btn" disabled={loading}>
+                                {loading ? 'Loading...' : 'Create'}
+                            </button>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </dialog>
         </div>

@@ -1,8 +1,49 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
+import { useCourseContext } from '../../../api/CourseProvider';
 
 const CreateModal:React.FC = () => {
 
     const modalRef = useRef<HTMLDialogElement | null>(null);
+
+    const { addCourse, loading, error, success } = useCourseContext();
+
+    const [formData, setFormData] = useState({
+        CSId: "",
+        coursenameTH: "",
+        coursenameEN: "",
+        courseStart: "",
+        courseEnd: "",
+        description: "",
+    });
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        setFormData({
+            ...formData,
+            [e.target.id]: e.target.value,
+        });
+    };
+
+    const handleAdd = async (e: React.FormEvent) => {
+        e.preventDefault();
+        await addCourse({
+            CSId: formData.CSId,
+            coursenameTH: formData.coursenameTH,
+            coursenameEN: formData.coursenameEN,
+            courseStart: Number(formData.courseStart),
+            courseEnd: Number(formData.courseEnd),
+            description: formData.description,
+        });
+
+        // เคลียร์ฟอร์มหลังจากเพิ่มสำเร็จ
+        setFormData({
+            CSId: "",
+            coursenameTH: "",
+            coursenameEN: "",
+            courseStart: "",
+            courseEnd: "",
+            description: "",
+        });
+    };
 
     const CreateCourseModal = () => {
         modalRef.current?.showModal();
@@ -22,23 +63,29 @@ const CreateModal:React.FC = () => {
                     <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
                     </form>
                     <h3 className="font-bold text-lg">เพิ่มหลักสูตร</h3>
-                    <div className='flex flex-col gap-y-2 mt-4'>
-                        <label htmlFor="cname">ชื่อหลักสูตร (th)</label>
-                        <input type="text" id='cname' className='input input-neutral w-full border-theme ' />
-                        <label htmlFor="cnameen">ชื่อหลักสูตร (en)</label>
-                        <input type="text" id='cnameen' className='input input-neutral w-full border-theme ' />
-                        <label htmlFor="cdescription">หลักสูตรปีการศึกษา</label>
-                        <input type="text" id='cdescription' className='input input-theme w-full border-theme' />
-                        <div className="modal-action gap-x-4">
-                            <form method="dialog">
-                                {/* if there is a button, it will close the modal */}
-                                <div className='flex gap-x-4'>
-                                    <button className="btn">Close</button>
-                                    <button className="btn">Add</button>
-                                </div>
-                            </form>
+                    <form className='flex flex-col gap-y-2 mt-4' onSubmit={handleAdd} >
+                        <label>รหัสหลักสูตร</label>
+                        <input type="text" id='CSId' className='input input-neutral w-full border-theme ' value={formData.CSId} onChange={handleChange} required />
+                        <label>ชื่อหลักสูตร (th)</label>
+                        <input type="text" id='coursenameTH' className='input input-neutral w-full border-theme ' value={formData.coursenameTH} onChange={handleChange} required />
+                        <label>ชื่อหลักสูตร (en)</label>
+                        <input type="text" id='coursenameEN' className='input input-neutral w-full border-theme ' value={formData.coursenameEN} onChange={handleChange} required />
+                        <label>เริ่มใช้หลักสูตร</label>
+                        <input type="number" id='courseStart' className='input input-theme w-full border-theme' value={formData.courseStart} onChange={handleChange} required />
+                        <label>จบใช้หลักสูตร</label>
+                        <input type="number" id='courseEnd' className='input input-theme w-full border-theme' value={formData.courseEnd} onChange={handleChange} required />
+                        <label>รายละเอียด</label>
+                        <textarea id='description' className='textarea textarea-neutral w-full border-theme' value={formData.description} onChange={handleChange} />
+                        {error && <p className="text-red-500 mt-2">{error}</p>}
+                        {success && <p className="text-green-500 mt-2">{success}</p>}
+                        
+                        <div className='flex justify-end mt-4 gap-x-4'>
+                            <button className="btn">Close</button>
+                            <button type='submit' className="btn" disabled={loading}>
+                                {loading ? 'Loading...' : 'Create'}
+                            </button>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </dialog>
         </div>

@@ -1,22 +1,45 @@
-import React, { useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Cedit from './Cedit';
+import { useCourseContext } from '../../../api/CourseProvider';
 
-const Cdropmenu:React.FC = () => {
+interface Props {
+    courseId: string;
+}
+
+const Cdropmenu:React.FC<Props> = ({ courseId }) => {
     
+    const { courses, deleteCourse } = useCourseContext();
     const modalRef = useRef<HTMLDialogElement | null>(null);
+    const [selectedCourse, setSelectedCourse] = useState<any>(null);
 
     const CEdit = () => {
-        modalRef.current?.showModal();
+        const course = courses.find(course => course._id === courseId);
+        if (course) {
+            setSelectedCourse(course);
+            modalRef.current?.showModal()
+        }
+    };
+
+    useEffect(() => {
+        if (selectedCourse && modalRef.current) {
+            modalRef.current.showModal();
+        }
+    }, [selectedCourse]);
+
+    const handleDelete = () => {
+        if (window.confirm("Are you sure you want to delete this course?")) {
+          deleteCourse(courseId);
+        }
     };
 
     return (
         <div className="dropdown dropdown-right ">
             <div tabIndex={0} role="button" className="btn btn-sm">Click</div>
-            <ul tabIndex={0} className="absolute dropdown-content menu bg-base-100 rounded-box z-30 w-36 p-2 shadow-sm">
+            <ul tabIndex={0} className="absolute dropdown-content menu bg-base-100 rounded-box z-30 w-36 p-2 shadow-sm border border-base-content/5">
                 <li><a className='hover:bg-blue-400 hover:text-white' onClick={CEdit}>Edit</a></li>
-                <li><a className='hover:bg-red-400 hover:text-white'>Delete</a></li>
+                <li><a className='hover:bg-red-400 hover:text-white' onClick={handleDelete} >Delete</a></li>
             </ul>
-            <Cedit modalRef={modalRef} />
+            {selectedCourse && <Cedit modalRef={modalRef} course={selectedCourse} />}
         </div>
 
     )

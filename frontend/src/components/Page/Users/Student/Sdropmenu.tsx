@@ -1,25 +1,47 @@
-import React, { useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Sedit from './Sedit';
+import { useUserContext } from '../../../api/UserProvider';
 
-const Sdropmenu:React.FC = () => {
+interface SdropmenuProps {
+    userId: string;
+}
 
+const Sdropmenu:React.FC<SdropmenuProps> = ({ userId }) => {
+
+    const { users, deleteUser } = useUserContext();
     const modalRef = useRef<HTMLDialogElement | null>(null);
+    const [selectedUser, setSelectedUser] = useState<any>(null);
 
     const SEdit = () => {
-        modalRef.current?.showModal();
+        const user = users.find(user => user._id === userId);
+        if (user) {
+            setSelectedUser(user);
+            modalRef.current?.showModal();
+        }
+    }
+
+    useEffect(() => {
+        if (selectedUser && modalRef.current) {
+            modalRef.current.showModal();
+        }
+    }, [selectedUser]);
+
+    const handleDelete = () => {
+        if (window.confirm("Are you sure you want to delete this user?")) {
+          deleteUser(userId);
+        }
     };
 
 
     return (
-        <div className="dropdown dropdown-right ">
+        <div className="dropdown dropdown-left">
             <div tabIndex={0} role="button" className="btn btn-sm">Click</div>
-            <ul tabIndex={0} className="absolute dropdown-content menu bg-base-100 rounded-box z-30 w-36 p-2 shadow-sm">
+            <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-50 w-36 p-2 shadow-sm">
                 <li><a className='hover:bg-blue-400 hover:text-white' onClick={SEdit}>Edit</a></li>
-                <li><a className='hover:bg-red-400 hover:text-white'>Delete</a></li>
+                <li><a className='hover:bg-red-400 hover:text-white' onClick={handleDelete}>Delete</a></li>
             </ul>
-            <Sedit modalRef={modalRef} />
+            {selectedUser && <Sedit modalRef={modalRef} user={selectedUser} />}
         </div>
-
     )
 }
 

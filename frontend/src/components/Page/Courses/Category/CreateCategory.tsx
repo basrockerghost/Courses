@@ -1,12 +1,40 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
+import { useCatContext } from '../../../api/CatProvider';
 
 const CreateCategory:React.FC = () => {
 
     const modalRef = useRef<HTMLDialogElement | null>(null);
+
+    const { addCategory, loading, error, success } = useCatContext();
     
-        const CreateCategoryModal = () => {
-            modalRef.current?.showModal();
-        };
+    const [data, setData] = useState({
+        catnameTH: '',
+        catnameEN: '',
+    });
+
+    const handleChange = (e:React.ChangeEvent<HTMLInputElement>) => {
+        setData({
+            ...data,
+            [e.target.id]: e.target.value,
+        });
+    };
+
+    const handleSubmit = async (e:React.FormEvent) => {
+        e.preventDefault();
+        await addCategory({
+            catnameTH: data.catnameTH,
+            catnameEN: data.catnameEN,
+        });
+
+        setData({
+            catnameTH: '',
+            catnameEN: '',
+        });
+    };
+
+    const CreateCategoryModal = () => {
+        modalRef.current?.showModal();
+    };
 
     return (
         <div className='flex flex-rows gap-x-4 items-center'>
@@ -18,25 +46,28 @@ const CreateCategory:React.FC = () => {
             <dialog ref={modalRef} id="category" className="modal">
                 <div className="modal-box">
                     <form method="dialog">
-                    {/* if there is a button in form, it will close the modal */}
-                    <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                        {/* if there is a button in form, it will close the modal */}
+                        <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
                     </form>
-                    <h3 className="font-bold text-lg">เพิ่มหมวดหมู่วิชา</h3>
-                    <div className='flex flex-col gap-y-2 mt-4'>
+                    <h3 className="font-bold text-lg">
+                        เพิ่มหมวดหมู่วิชา
+                    </h3>
+                    <form className='flex flex-col gap-y-2 mt-4' onSubmit={handleSubmit}>
                         <label htmlFor="caname">ชื่อหมวดหมู่วิชา (th)</label>
-                        <input type="text" id='caname' className='input input-neutral w-full border-theme ' />
+                        <input type="text" id='catnameTH' className='input input-neutral w-full border-theme ' value={data.catnameTH} onChange={handleChange} required />
                         <label htmlFor="canameen">ชื่อหมวดหมู่วิชา (en)</label>
-                        <input type="text" id='canameen' className='input input-neutral w-full border-theme ' />
-                        <div className="modal-action gap-x-4">
-                            <form method="dialog">
-                                {/* if there is a button, it will close the modal */}
-                                <div className='flex gap-x-4'>
-                                    <button className="btn">Close</button>
-                                    <button className="btn">Add</button>
-                                </div>
-                            </form>
+                        <input type="text" id='catnameEN' className='input input-neutral w-full border-theme ' value={data.catnameEN} onChange={handleChange} required />
+                        
+                        {error && <p className="text-red-500 mt-2">{error}</p>}
+                        {success && <p className="text-green-500 mt-2">{success}</p>}
+                        
+                        <div className='flex justify-end mt-4 gap-x-4'>
+                            <button className="btn">Close</button>
+                            <button type='submit' className="btn" disabled={loading}>
+                                {loading ? 'Loading...' : 'Create'}
+                            </button>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </dialog>
         </div>

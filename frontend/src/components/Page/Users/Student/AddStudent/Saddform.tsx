@@ -1,46 +1,45 @@
 import axios from 'axios';
 import React, { useState } from 'react'
+import { useUserContext } from '../../../../api/UserProvider';
 
 const Saddform:React.FC = () => {
 
+    const { addUser, loading, success, error } = useUserContext();
+    
     const [data, setData] = useState({
-        personalID: '',
         firstname: '',
         lastname: '',
+        personalID: '',
         password: '',
-    })
-
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-    const [success, setSuccess] = useState<string | null>(null);
+        role: 'student'
+    });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setData({ ...data, [e.target.id]: e.target.value });
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleAdd = async (e: React.FormEvent) => {
         e.preventDefault();
-        setLoading(true);
-        setError(null);
-        setSuccess(null);
+        await addUser({
+            firstname: data.firstname,
+            lastname: data.lastname,
+            personalID: data.personalID,
+            email: '',
+            password: data.password,
+            role: data.role as "student" | "teacher" | "admin"
+        })
+        setData({
+            firstname: "",
+            lastname: "",
+            personalID: "",
+            password: "",
+            role: "student"
+        })
+    }
 
-        try {
-            const response = await axios.post('http://localhost:5000/api/add/student', data);
-            setSuccess(response.data.message);
-            setData({
-                personalID: '',
-                firstname: '',
-                lastname: '',
-                password: '',
-            });
-        } catch (err: any) {
-            setError(err.response?.data?.message || 'Login failed');
-        } finally {
-            setLoading(false);
-        }
-    };
+    
     return (
-        <form className='flex flex-col gap-y-2 mt-4' onSubmit={handleSubmit}>
+        <form className='flex flex-col gap-y-2 mt-4' onSubmit={handleAdd}>
             <label htmlFor="name">ชื่อ</label>
             <input type="text" id='firstname' className='input input-neutral w-full border-theme ' value={data.firstname} onChange={handleChange} required/>
             <label htmlFor="lastname">นามสกุล</label>

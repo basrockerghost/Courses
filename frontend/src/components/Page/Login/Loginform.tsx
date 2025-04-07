@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
+import AlertLog from './AlertLog';
 
 const Loginform:React.FC = () => {
 
@@ -35,7 +36,7 @@ const Loginform:React.FC = () => {
             localStorage.setItem('token', response.data.token);
             console.log('Save token in storage', response.data.token);
             localStorage.setItem('user', JSON.stringify(response.data.user));
-            navigate('/dashboard')
+            navigate('/dashboard', { state: { success: response.data.message } })
         } catch (err: any) {
             setError(err.response?.data?.message || 'Login failed');
         } finally {
@@ -46,6 +47,7 @@ const Loginform:React.FC = () => {
 
     return (
         <form onSubmit={handleSubmit}>
+            <AlertLog error={error} success={success} />
             <p className='md:text-2xl text-xl md:font-medium mb-4'>Login</p>
 
             <label className="block mb-2">Student ID</label>
@@ -58,9 +60,6 @@ const Loginform:React.FC = () => {
                 <a href="" className='link link-hover'>forget password</a>
                 <a href="/register" className='link link-hover'>create account</a>
             </div>
-
-            {error && <p className="text-red-500 mt-2">{error}</p>}
-            {success && <p className="text-green-500 mt-2">{success}</p>}
 
             <button type="submit" className="btn mt-4 bg-theme text-white w-full" disabled={loading}>
                 {loading ? 'Logging in...' : 'Login'}

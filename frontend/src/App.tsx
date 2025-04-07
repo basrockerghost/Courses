@@ -1,6 +1,6 @@
 import './App.css'
 import { Route, Routes } from 'react-router-dom'
-import Home from './components/Home/Home'
+import AdminHome from './components/Home/Home'
 import { useEffect } from 'react';
 import Course from './components/Page/Courses/Course/Course';
 import Category from './components/Page/Courses/Category/Category';
@@ -14,6 +14,10 @@ import Login from './components/Page/Login/Login';
 import Tprofile from './components/Page/Users/Teacherprofile/Tprofile';
 import Sprofile from './components/Page/Users/Stdprofile/Sprofile';
 import Register from './components/Page/Register/Register';
+import Curriculum from './components/Page/Courses/Curriculum/curriculum';
+import ShowCur from './components/Page/Courses/Curriculum/detail/showCur';
+import StdHome from './components/studentPage/Pages/Home/stdHome';
+
 
 function App() {
 
@@ -26,17 +30,20 @@ function App() {
       <Routes>
         <Route path='/login' element={<Login/>}></Route>
         <Route path='/register' element={<Register/>}></Route>
-        <Route path='/' element={<Home/>} >
+        <Route path='/home' element={<StdHome/>} ></Route>
+        <Route path='/' element={<AdminHome/>} >
           <Route path='/dashboard' element={<Dashboard/>} ></Route>
           <Route path='/teachers' element={<Teacher/>} ></Route>
           <Route path='/tprofile' element={<Tprofile/>} ></Route>
           <Route path='/students' element={<Student/>} ></Route>
           <Route path='/sprofile' element={<Sprofile/>} ></Route>
           <Route path='/report' element={<Report/>} ></Route>
-          <Route path='/course' element={<Course/>} ></Route>
-          <Route path='/category' element={<Category/>} ></Route>
-          <Route path='/group' element={<Group/>} ></Route>
-          <Route path='/subject' element={<Subject/>} ></Route>
+          <Route path='/curriculums' element={<Curriculum/> }> </Route>
+          <Route path='/curriculum' element={<ShowCur/> }> </Route>
+          <Route path='/courses' element={<Course/>} ></Route>
+          <Route path='/categories' element={<Category/>} ></Route>
+          <Route path='/groups' element={<Group/>} ></Route>
+          <Route path='/subjects' element={<Subject/>} ></Route>
         </Route>
       </Routes>
     </>
