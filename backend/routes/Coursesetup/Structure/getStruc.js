@@ -4,20 +4,6 @@ const Structure = require('../../../models/Course/Structure')
 
 router.get('/structures', async (req, res) => {
     try {
-        // const structures = await Structure.find().populate({
-        //     path: 'categories.categoryId',
-        //     model: 'Category'
-        // }).populate({
-        //     path: 'categories.groups.groupId',
-        //     model: 'Group'
-        // }).populate({
-        //     path: 'categories.groups.subjects.subjectId',
-        //     model: 'Subject'
-        // }).populate({
-        //     path: 'courseId',
-        //     model: 'Course'
-        // });
-
         const structures = await Structure.find();
 
         res.json(structures);

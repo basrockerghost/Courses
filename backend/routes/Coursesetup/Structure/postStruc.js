@@ -99,8 +99,12 @@ router.post('/structure/:structureId/category/:categoryId/group', async (req, re
 //post subject
 router.post('/structure/:structureId/category/:categoryId/group/:groupId/subject', async (req, res) => {
     try {
-        const { subjectId } = req.body;
+        const { subjectId: subjectIds } = req.body;
         const { structureId, categoryId, groupId } = req.params;
+
+        if (!Array.isArray(subjectIds)) {
+            return res.status(400).json({ message: "subjectId must be an array" });
+        }
 
         const structure = await Structure.findById(structureId);
         if (!structure) {
@@ -120,18 +124,19 @@ router.post('/structure/:structureId/category/:categoryId/group/:groupId/subject
         const subjectExistsAnywhere = structure.categories.some(category =>
             category.groups.some(group =>
                 group.subjects.some(subject =>
-                    subject.subjectId.toString() === subjectId
+                    subjectIds.includes(subject.subjectId.toString())
                 )
             )
         );
         
         if (subjectExistsAnywhere) {
-            return res.status(400).json({ message: "Subject already exists in this structure" });
+            return res.status(400).json({ message: "One or more subjects already exist in this structure" });
         }
+        
 
         const updatedStructure = await Structure.findOneAndUpdate(
             { _id: structureId, "categories.categoryId": categoryId, "categories.groups.groupId": groupId },
-            { $push: { "categories.$[category].groups.$[group].subjects": { subjectId } } },
+            { $push: { "categories.$[category].groups.$[group].subjects": { $each: subjectIds.map(id => ({ subjectId: id })) } } },
             {
                 new: true,
                 arrayFilters: [

@@ -11,14 +11,16 @@ const showCur:React.FC = () => {
 
     return (
         <div className='w-full pt-6 px-6 bg-base-100'>
-            <div className='flex flex-col gap-y-4'>
+            <div className='flex flex-col gap-y-4 '>
                 <div className='flex justify-between items-center'>
                     <p className='text-2xl font-semibold'>รายละเอียดโครงสร้างหลักสูตร</p>
                     <AddSub curriculumId={curriculum._id} curriculum={curriculum} />
                 </div>
                 <div className='flex flex-col gap-y-4'>
                     <ShowDetailCur />
+                    <div className='max-h-[var(--height)] overflow-y-auto scrollbar-hide border border-base-300 rounded-lg'>
                     <ListCurtail/>
+                    </div>
                 </div>
             </div>
         </div>
@@ -26,3 +28,5 @@ const showCur:React.FC = () => {
 }
 
 export default showCur
+
+// h-[var(--height)] overflow-y-auto

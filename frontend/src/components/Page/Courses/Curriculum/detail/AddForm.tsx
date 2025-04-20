@@ -9,7 +9,7 @@ interface Props {
 const AddForm:React.FC<Props> = ({ structureId }) => {
 
     const modalRef = useRef<HTMLDialogElement | null>(null);
-    const { structures, addCategory } = useStructureContext();
+    const { structures, addCategory, deleteStructure } = useStructureContext();
     const { categories } = useCatContext();
     
     const [selectedCategory, setSelectedCategory] = useState('');
@@ -28,9 +28,17 @@ const AddForm:React.FC<Props> = ({ structureId }) => {
         try {
             await addCategory(structureId, selectedCategory);
             alert('เพิ่มหมวดหมู่สำเร็จ');
+            setSelectedCategory('');
             modalRef.current?.close();
         } catch (error) {
             console.error('เกิดข้อผิดพลาด:', error);
+        }
+    }
+
+    const handleDelete = (structureId: string) => {
+        if(window.confirm("Are you sure you want to delete this structure?")) {
+            deleteStructure(structureId);
+            modalRef.current?.close();
         }
     }
 
@@ -40,7 +48,10 @@ const AddForm:React.FC<Props> = ({ structureId }) => {
 
     return (
         <div>
-            <button onClick={openModal} className="btn btn-sm">+</button>
+            <div>
+                <button onClick={openModal} className="btn btn-sm bg-accent text-base-100">เพิ่ม</button>
+                <button onClick={() => handleDelete(structureId)} className='btn btn-sm bg-error text-base-100 ml-2'>ลบ</button>
+            </div>
             <dialog ref={modalRef} id="course-edit" className="modal">
                 <div className="modal-box">
                     <form method="dialog">

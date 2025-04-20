@@ -22,10 +22,12 @@ const showDetailCur:React.FC = () => {
     
     
     return (
-        <div className="">
-            <p><strong>ชื่อ (TH):</strong> {curriculum.curriculumnameTH}</p>
-            <p><strong>ชื่อ (EN):</strong> {curriculum.curriculumnameEN}</p>
-            <p><strong>สถานะ:</strong> {curriculum.status}</p>
+        <div className="flex gap-x-4">
+            <div>
+                <p><strong>ชื่อ (TH):</strong> {curriculum.curriculumnameTH}</p>
+                <p><strong>ชื่อ (EN):</strong> {curriculum.curriculumnameEN}</p>
+                <p><strong>สถานะ:</strong> {curriculum.status}</p>
+            </div>
         </div>
     )
 }

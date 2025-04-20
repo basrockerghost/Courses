@@ -10,7 +10,7 @@ interface Props {
 const addGroup:React.FC<Props> = ({ structureId, categoryId }) => {
     
     const modalRef = useRef<HTMLDialogElement | null>(null);
-    const { structures, addGroup } = useStructureContext();
+    const { structures, addGroup, deleteCategory } = useStructureContext();
     const { groups } = useGroupContext();
 
 
@@ -36,6 +36,7 @@ const addGroup:React.FC<Props> = ({ structureId, categoryId }) => {
         try {
             await addGroup(structureId, categoryId, selectedGroup);
             alert('เพิ่มกลุ่มวิชาสำเร็จ');
+            setSelectedGroup('');
             modalRef.current?.close();
         } catch (error: any) {
             if (error.response?.status === 400) {
@@ -49,6 +50,13 @@ const addGroup:React.FC<Props> = ({ structureId, categoryId }) => {
         }
     }
 
+    const handleDelete = (structureId: string, categoryId: string) => {
+        if(window.confirm("Are you sure you want to delete this category?")) {
+            deleteCategory(structureId, categoryId);
+            modalRef.current?.close();
+        }
+    }
+
     const openModal = () => {
         modalRef.current?.showModal();
     }
@@ -58,7 +66,10 @@ const addGroup:React.FC<Props> = ({ structureId, categoryId }) => {
 
     return (
         <div>
-             <button onClick={openModal} className="btn btn-sm">+</button>
+             <div>
+                <button onClick={openModal} className="btn btn-sm bg-accent text-base-100">เพิ่ม</button>
+                <button onClick={() => handleDelete(structureId, categoryId)} className='btn btn-sm bg-error text-base-100 ml-2'>ลบ</button>
+             </div>
              <dialog ref={modalRef} className='modal'>
                 <div className='modal-box'>
                     <form method='dialog' >

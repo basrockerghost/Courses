@@ -1,7 +1,6 @@
 import React from 'react'
 import Createsubject from './Createsubject'
 import Subjectlist from './Subjectlist'
-import Pinpagesubject from './Pinpagesubject'
 
 const Subject:React.FC = () => {
     return (
@@ -11,9 +10,8 @@ const Subject:React.FC = () => {
                     <p className='text-2xl font-semibold'>All Subject</p>
                     <Createsubject/>
                 </div>
-                <div className='flex flex-col gap-y-4'>
+                <div className='flex flex-col gap-y-4 '>
                     <Subjectlist/>
-                    <Pinpagesubject/>
                 </div>
             </div>
         </div>

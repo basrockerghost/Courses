@@ -16,11 +16,11 @@ const SubjectSchema = new mongoose.Schema({
     },
     credits: {
         type: Number,
-        default: 0
+        enum: [1, 3, 5],
+        default: 1
     },
     description: {
         type: String,
-        required: true,
         trim: true
     },
 }, { timestamps: true });

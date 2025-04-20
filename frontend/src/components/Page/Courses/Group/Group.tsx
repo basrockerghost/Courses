@@ -1,7 +1,6 @@
 import React from 'react'
 import Creategroup from './Creategroup'
 import Grouplist from './Grouplist'
-import Pinpagegroup from './Pinpagegroup'
 
 const Group:React.FC = () => {
     return (
@@ -13,7 +12,6 @@ const Group:React.FC = () => {
                 </div>
                 <div className='flex flex-col gap-y-4'>
                     <Grouplist/>
-                    <Pinpagegroup/>
                 </div>
             </div>
         </div>

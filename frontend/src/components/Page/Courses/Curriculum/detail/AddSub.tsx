@@ -11,7 +11,7 @@ interface Props {
 const AddSub:React.FC<Props> = ({ structureId, categoryId, groupId }) => {
 
     const modalRef = useRef<HTMLDialogElement | null>(null);
-    const { structures, addSubject } = useStructureContext();
+    const { structures, addSubject, deleteGroup } = useStructureContext();
     const { subjects } = useSubjectContext();
     
     const[ selectedSubjects, setSelectedSubjects ] = useState<string[]>([]);
@@ -53,9 +53,16 @@ const AddSub:React.FC<Props> = ({ structureId, categoryId, groupId }) => {
         try {
             await addSubject(structureId, categoryId, groupId, selectedSubjects);
             alert('เพิ่มวิชาสำเร็จ');
+            setSelectedSubjects([]);
             modalRef.current?.close();
         } catch (error) {
             console.error('เกิดข้อผิดพลาด:', error);
+        }
+    }
+
+    const handleDelete = (structureId: string, categoryId: string, groupId: string) => {
+        if(window.confirm("Are you sure you want to delete this group?")) {
+            deleteGroup(structureId, categoryId, groupId);
         }
     }
 
@@ -68,7 +75,10 @@ const AddSub:React.FC<Props> = ({ structureId, categoryId, groupId }) => {
     
     return (
         <div>
-            <button onClick={openModal} className="btn btn-sm">+</button>
+            <div>
+                <button onClick={openModal} className="btn btn-sm bg-accent text-base-100">เพิ่ม</button>
+                <button onClick={() => handleDelete(structureId, categoryId, groupId)} className='btn btn-sm bg-error text-base-100 ml-2'>ลบ</button>
+            </div>
             <dialog ref={modalRef} className='modal'>
                 <div className='modal-box'>
                     <form method='dialog' >
@@ -96,6 +106,7 @@ const AddSub:React.FC<Props> = ({ structureId, categoryId, groupId }) => {
                                                 disabled={isUsed}
                                             />
                                             <span className={`label-text ml-2 ${isUsed ? "text-gray-400 line-through" : ""}`}>
+                                                {subject.subjectID} -
                                                 {subject.subjectnameTH}
                                             </span>
                                         </div>

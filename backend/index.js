@@ -3,9 +3,11 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const authRoutes = require('./routes/LoginRegis/authRoutes');
-// add user
+// add
 const addUser = require('./routes/Adduser/addUser');
 const addFileUser = require('./routes/Adduser/addFileUser');
+const selectCurruculum = require('./routes/User/selectCurriculum');4
+const SubjectToUser = require('./routes/User/addSubject');
 //get
 const user = require('./routes/User/showUser');
 const course = require('./routes/Coursesetup/Course/showCourse');
@@ -35,6 +37,8 @@ const deleteCat = require('./routes/Coursesetup/Category/deleteCategory');
 const deleteGroup = require('./routes/Coursesetup/Group/deleteGroup');
 const deleteSub = require('./routes/Coursesetup/Subject/deleteSubject');
 const deleteCur = require('./routes/Coursesetup/Curriculus/deleteCur');
+const deleteSubinStruc = require('./routes/Coursesetup/Structure/deleteStruc');
+const removeSub = require('./routes/User/removeSub');
 
 const app = express();
 app.use(express.json());
@@ -48,12 +52,12 @@ mongoose.connect(process.env.MONGO_URI, {
       .catch(err => console.error('❌ MongoDB Connection Failed:', err));
 
 app.use('/api/auth', authRoutes);
-app.use('/api/add', addUser);
+app.use('/api/add', addUser, selectCurruculum, SubjectToUser);
 app.use('/api/upload', addFileUser);
 app.use('/api/create', createCourse, createCategory, createGroup, createSub, createCurriculum, postStructure);
 app.use('/api/get', user, course, category, group, subject, curriculum, structure);
 app.use('/api/edit', editUser, editCourse, editCat, editGroup, editSub, editCur);
-app.use('/api/delete', deleteUser, deleteCourse, deleteCat, deleteGroup, deleteSub, deleteCur);
+app.use('/api/delete', deleteUser, deleteCourse, deleteCat, deleteGroup, deleteSub, deleteCur, deleteSubinStruc, removeSub);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

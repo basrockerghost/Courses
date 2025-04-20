@@ -15,7 +15,7 @@ const Createsubject:React.FC = () => {
         description: "",
     })
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         setData({
             ...data,
             [e.target.id]: e.target.value,
@@ -61,13 +61,31 @@ const Createsubject:React.FC = () => {
                     <h3 className="font-bold text-lg">เพิ่มวิชา</h3>
                     <form className='flex flex-col gap-y-2 mt-4' onSubmit={handleAdd}>
                         <label htmlFor="">รหัสวิชา</label>
-                        <input type="text" id='subjectID' className='input input-neutral w-full border-theme ' value={data.subjectID} onChange={handleChange} required />
+                        <input type="text" id='subjectID' className='input input-neutral w-full border-theme ' value={data.subjectID} placeholder='Ex. 000-000' onChange={(e) => {
+                            let value = e.target.value.replace(/\D/g, ""); // ลบทุกอย่างที่ไม่ใช่ตัวเลข
+                            if (value.length > 6) value = value.slice(0, 6); // จำกัดความยาวไม่เกิน 6 ตัว
+                            const formatted =
+                            value.length > 3 ? `${value.slice(0, 3)}-${value.slice(3)}` : value;
+                            setData({ ...data, subjectID: formatted });
+                        }} required />
                         <label htmlFor="sname">ชื่อวิชา (th)</label>
-                        <input type="text" id='subjectnameTH' className='input input-neutral w-full border-theme ' value={data.subjectnameTH} onChange={handleChange} required />
+                        <input type="text" id='subjectnameTH' className='input input-neutral w-full border-theme ' value={data.subjectnameTH} onChange={(e) => {
+                            const thOnly = e.target.value.replace(/[^ก-๙\s]/g, "");
+                            setData({ ...data, subjectnameTH: thOnly });
+                        }} required />
                         <label htmlFor="snameen">ชื่อวิชา (en)</label>
-                        <input type="text" id='subjectnameEN' className='input input-neutral w-full border-theme ' value={data.subjectnameEN} onChange={handleChange} required />
+                        <input type="text" id='subjectnameEN' className='input input-neutral w-full border-theme ' value={data.subjectnameEN} onChange={(e) => {
+                            const enOnly = e.target.value.replace(/[^a-zA-Z\s]/g, "");
+                            setData({ ...data, subjectnameEN: enOnly });
+                        }} required />
                         <label htmlFor="scredit">หน่วยกิต</label>
-                        <input type="number" id='credits' className='input input-neutral w-full border-theme ' value={data.credits} onChange={handleChange} required />
+                        {/* dropdown select credits */}
+                        <select id='credits' className='select select-neutral w-full border-theme' value={data.credits} onChange={handleChange} required>
+                            <option value="" disabled={true}>-- เลือกหน่วยกิต --</option>
+                            <option value="1">1</option>
+                            <option value="3">3</option>
+                            <option value="5">5</option>
+                        </select>
                         <label htmlFor="">description</label>
                         <textarea id='description' className='textarea textarea-neutral w-full border-theme' value={data.description} onChange={handleChange} />
 
@@ -75,7 +93,7 @@ const Createsubject:React.FC = () => {
                         {success && <p className="text-green-500 mt-2">{success}</p>}
 
                         <div className='flex justify-end mt-4 gap-x-4'>
-                            <button type='submit' className="btn" disabled={loading}>
+                            <button type='submit' className="btn bg-info/80 text-base-100" disabled={loading}>
                                 {loading ? 'Loading...' : 'Create'}
                             </button>
                         </div>

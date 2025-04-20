@@ -1,7 +1,6 @@
 import React from 'react'
 import CreateModal from './CreateModal'
 import CourseList from './CourseList'
-import Pinpage from './Pinpage'
 
 const Course:React.FC = () => {
     return (
@@ -13,7 +12,6 @@ const Course:React.FC = () => {
                 </div>
                 <div className='flex flex-col gap-y-4'>
                     <CourseList/>
-                    <Pinpage/>
                 </div>
             </div>
         </div>

@@ -51,15 +51,21 @@ const Creategroup:React.FC = () => {
                     <h3 className="font-bold text-lg">สร้างกลุ่มวิชา</h3>
                     <form className='flex flex-col gap-y-2 mt-4' onSubmit={handleSubmit}>
                         <label htmlFor="groupnameTH">ชื่อกลุ่มวิชา (th)</label>
-                        <input type="text" id='groupnameTH' className='input input-neutral w-full border-theme ' value={data.groupnameTH} onChange={handleChange} required />
+                        <input type="text" id='groupnameTH' className='input input-neutral w-full border-theme ' value={data.groupnameTH} onChange={(e) => {
+                            const thOnly = e.target.value.replace(/[^ก-๙\s]/g, "");
+                            setData({ ...data, groupnameTH: thOnly });
+                        }} required />
                         <label htmlFor="groupnameEN">ชื่อกลุ่มวิชา (en)</label>
-                        <input type="text" id='groupnameEN' className='input input-neutral w-full border-theme ' value={data.groupnameEN} onChange={handleChange} required />
+                        <input type="text" id='groupnameEN' className='input input-neutral w-full border-theme ' value={data.groupnameEN} onChange={(e) => {
+                            const enOnly = e.target.value.replace(/[^a-zA-Z\s]/g, "");
+                            setData({ ...data, groupnameEN: enOnly });
+                        }} required />
 
                         {error && <p className="text-red-500 mt-2">{error}</p>}
                         {success && <p className="text-green-500 mt-2">{success}</p>}
 
                         <div className='flex justify-end mt-4 gap-x-4'>
-                            <button type='submit' className="btn" disabled={loading}>
+                            <button type='submit' className="btn bg-info/80 text-base-100" disabled={loading}>
                                 {loading ? 'Loading...' : 'Create'}
                             </button>
                         </div>

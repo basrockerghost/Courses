@@ -7,7 +7,7 @@ const Subjectlist:React.FC = () => {
     const { subjects } = useSubjectContext();
 
     return (
-        <div className="rounded-box border border-base-content/5 bg-base-100 max-h-[var(--coursetableH)]">
+        <div className="rounded-box border border-base-content/10 bg-base-100 h-[var(--coursetableH)] overflow-x-auto scrollbar-hide">
             <table className="table">
                 {/* head */}
                 <thead>

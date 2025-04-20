@@ -1,11 +1,13 @@
 import axios from 'axios';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import AlertLog from './AlertLog';
+import { useUserContext } from '../../api/UserProvider';
 
 const Loginform:React.FC = () => {
 
     const navigate = useNavigate();
+    const {setUser} = useUserContext();
 
     const [data, setData] = useState({
         personalID: '',
@@ -33,10 +35,21 @@ const Loginform:React.FC = () => {
                 personalID: '',
                 password: ''
             });
-            localStorage.setItem('token', response.data.token);
-            console.log('Save token in storage', response.data.token);
-            localStorage.setItem('user', JSON.stringify(response.data.user));
-            navigate('/dashboard', { state: { success: response.data.message } })
+            const { token, user, message } = response.data;
+
+            localStorage.setItem('token', token);
+            localStorage.setItem('user', JSON.stringify(user));
+            setUser(user);
+            console.log('Save token in storage', token);
+
+            // ตรวจสอบ role แล้ว navigate ตาม role
+            if (user.role === 'student') {
+                navigate('/home', { state: { success: message } });
+            } else if (user.role === 'admin') {
+                navigate('/dashboard', { state: { success: message } });
+            } else {
+                setError('User role is not recognized');
+            }
         } catch (err: any) {
             setError(err.response?.data?.message || 'Login failed');
         } finally {

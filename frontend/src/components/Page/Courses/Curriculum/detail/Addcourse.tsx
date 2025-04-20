@@ -15,6 +15,10 @@ const AddSub:React.FC<Props> = ({ curriculumId, curriculum }) => {
 
     const [selectedCourse, setSelectedCourse] = useState<string>(curriculum?.courseId || '');
 
+    const isCurriculumUsed = structures.some(
+        (structure) => structure.curriculumId === curriculumId
+    );
+
     const handleUpdate = async () => {
         if (!selectedCourse) {
             alert("กรุณาเลือกหลักสูตร");
@@ -24,6 +28,11 @@ const AddSub:React.FC<Props> = ({ curriculumId, curriculum }) => {
         const existingStructure = structures.find(
             (structure) => structure.curriculumId === curriculumId && structure.courseId === selectedCourse 
         );
+
+        if (isCurriculumUsed) {
+            alert('โครงสร้างของหลักสูตรนี้ถูกเพิ่มไว้แล้ว');
+            return;
+        }
     
         if (existingStructure) {
             alert('หลักสูตรนี้มีอยู่แล้วในโครงสร้างหลักสูตร');
@@ -52,7 +61,18 @@ const AddSub:React.FC<Props> = ({ curriculumId, curriculum }) => {
 
     return (
         <div>
-            <button onClick={openModal} className="btn">เพิ่ม/แก้ไขวิชา</button>
+            <div 
+                className="tooltip tooltip-left tooltip-warning" 
+                data-tip={isCurriculumUsed ? "ไม่สามารถเพิ่มได้ เพราะมีในโครงสร้างแล้ว" : null}
+            >
+                <button 
+                    onClick={openModal} 
+                    className="btn bg-accent text-base-100" 
+                    disabled={isCurriculumUsed}
+                >
+                    เพิ่ม/แก้ไขวิชา
+                </button>
+            </div>
             <dialog ref={modalRef} id="course-edit" className="modal">
                 <div className="modal-box">
                     <form method="dialog">

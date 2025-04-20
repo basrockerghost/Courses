@@ -2,12 +2,13 @@ import React from 'react'
 import Cdropmenu from './Cdropmenu'
 // import api from '../../../api/Api'
 import { useCourseContext } from '../../../api/CourseProvider';
+import ViewDetail from './ViewDetail';
 
 const CourseList:React.FC = () => {
     const { courses } = useCourseContext();
 
     return (
-        <div className="rounded-box border border-base-content/5 bg-base-100 max-h-[var(--coursetableH)]">
+        <div className="rounded-box border border-base-content/5 bg-base-100 max-h-[var(--coursetableH)] overflow-x-auto">
             <table className="table">
                 {/* head */}
                 <thead>
@@ -23,12 +24,15 @@ const CourseList:React.FC = () => {
                 {courses.length > 0 ? (
                         courses.map(course => (
                             <tr key={course._id}>
-                                <td>{course.CSId}</td>
-                                <td>{course.coursenameTH}</td>
-                                <td>{course.coursenameEN}</td>
-                                <td>{course.courseStart} - {course.courseEnd}</td>
-                                <td className="relative w-52">
-                                    <Cdropmenu courseId={course._id} />
+                                <td className='w-32'>{course.CSId}</td>
+                                <td className='w-96'>{course.coursenameTH}</td>
+                                <td className='w-72'>{course.coursenameEN}</td>
+                                <td className='w-48'>{course.courseStart} - {course.courseEnd}</td>
+                                <td className='w-36'>
+                                    <div className='flex items-center gap-x-4'>
+                                        <Cdropmenu courseId={course._id} />
+                                        <ViewDetail courseId={course._id} />
+                                    </div>
                                 </td>
                             </tr>
                         ))

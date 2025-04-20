@@ -7,7 +7,7 @@ router.post('/subject', async (req, res) => {
     try {
         const { subjectID, subjectnameTH, subjectnameEN, credits, description } = req.body;
 
-        if(!subjectID || !subjectnameTH || !subjectnameEN || !credits || !description) {
+        if(!subjectID || !subjectnameTH || !subjectnameEN || !credits) {
             return res.status(400).json({ message: 'All fields are required' });
         }
 

@@ -35,6 +35,10 @@ interface StructureContextType {
     addCategory: (structureId: string, categoryId: string) => Promise<void>;
     addGroup: (structureId: string, categoryId: string, groupId: string) => Promise<void>;
     addSubject: (structureId: string, categoryId: string, groupId: string, subjectId: string[]) => Promise<void>;
+    deleteStructure: (structure: string) => Promise<void>
+    deleteCategory: (structureId: string, categoryId: string) => Promise<void>;
+    deleteGroup: (structureId: string, categoryId: string, groupId: string) => Promise<void>;
+    deleteSubject: (structureId: string, categoryId: string, groupId: string, subjectId: string) => Promise<void>;
 }
 
 const StructureContext = createContext<StructureContextType | undefined>(undefined);
@@ -165,8 +169,69 @@ export const StructureProvider = ({ children }: { children: React.ReactNode }) =
         }
     };
 
+    const deleteStructure = async (structureId: string) => {
+        setLoading(true);
+        setError(null);
+        setSuccess(null);
+        try {
+            await api.delete(`/delete/structure/${structureId}`);
+            setSuccess("Structure deleted successfully");
+            fetchStructures();
+        } catch (err : any) {
+            setError(err.response?.data?.message || "Failed to delete structure");
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    const deleteCategory = async (structureId: string, categiryId: string) => {
+        setLoading(true);
+        setError(null);
+        setSuccess(null);
+        try {
+            await api.delete(`/delete/structure/${structureId}/category/${categiryId}`);
+            setSuccess("Category deleted successfully");
+            fetchStructures();
+        } catch (err : any) {
+            setError(err.response?.data?.message || "Failed to delete category");
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    const deleteGroup = async (structureId: string, categoryId: string, groupId: string) => {
+        setLoading(true);
+        setError(null);
+        setSuccess(null);
+        try {
+            await api.delete(`/delete/structure/${structureId}/category/${categoryId}/group/${groupId}`);
+            setSuccess("Group deleted successfully");
+            fetchStructures();
+        } catch (err: any) {
+            setError(err.response?.data?.message || "Failed to delete group")
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    const deleteSubject = async (structureId: string, categoryId: string, groupId: string, subjectId: string) => {
+        setLoading(true);
+        setError(null);
+        setSuccess(null);
+        try {
+            await api.delete(`/delete/structure/${structureId}/category/${categoryId}/group/${groupId}/subject/${subjectId}`);
+            setSuccess("Subject deleted successfully");
+            fetchStructures();
+        } catch (err: any) {
+            setError(err.response?.data?.message || "Failed to delete subject");
+        } finally {
+            setLoading(false);
+        }
+    };
+    
+
     return (
-        <StructureContext.Provider value={{ structures, addStructure, addCategory, addGroup, addSubject, fetchStructures, loading, error, success }}>
+        <StructureContext.Provider value={{ structures, addStructure, addCategory, addGroup, addSubject, fetchStructures, deleteStructure, deleteCategory, deleteGroup, deleteSubject, loading, error, success }}>
             {children}
         </StructureContext.Provider>
     );

@@ -12,12 +12,12 @@ const CreateCategory:React.FC = () => {
         catnameEN: '',
     });
 
-    const handleChange = (e:React.ChangeEvent<HTMLInputElement>) => {
-        setData({
-            ...data,
-            [e.target.id]: e.target.value,
-        });
-    };
+    // const handleChange = (e:React.ChangeEvent<HTMLInputElement>) => {
+    //     setData({
+    //         ...data,
+    //         [e.target.id]: e.target.value,
+    //     });
+    // };
 
     const handleSubmit = async (e:React.FormEvent) => {
         e.preventDefault();
@@ -25,7 +25,7 @@ const CreateCategory:React.FC = () => {
             catnameTH: data.catnameTH,
             catnameEN: data.catnameEN,
         });
-
+        alert('เพิ่มหมวดหมู่สำเร็จ');
         setData({
             catnameTH: '',
             catnameEN: '',
@@ -54,16 +54,21 @@ const CreateCategory:React.FC = () => {
                     </h3>
                     <form className='flex flex-col gap-y-2 mt-4' onSubmit={handleSubmit}>
                         <label htmlFor="caname">ชื่อหมวดหมู่วิชา (th)</label>
-                        <input type="text" id='catnameTH' className='input input-neutral w-full border-theme ' value={data.catnameTH} onChange={handleChange} required />
+                        <input type="text" id='catnameTH' className='input input-neutral w-full border-theme ' value={data.catnameTH} placeholder='ไทยเท่านั้น' onChange={(e) => {
+                            const thOnly = e.target.value.replace(/[^ก-๙\s]/g, "");
+                            setData({ ...data, catnameTH: thOnly });
+                        }} required />
                         <label htmlFor="canameen">ชื่อหมวดหมู่วิชา (en)</label>
-                        <input type="text" id='catnameEN' className='input input-neutral w-full border-theme ' value={data.catnameEN} onChange={handleChange} required />
+                        <input type="text" id='catnameEN' className='input input-neutral w-full border-theme ' value={data.catnameEN} placeholder='อังกฤษเท่านั้น' onChange={(e) => {
+                            const enOnly = e.target.value.replace(/[^a-zA-Z\s]/g, "");
+                            setData({ ...data, catnameEN: enOnly });
+                        }} required />
                         
                         {error && <p className="text-red-500 mt-2">{error}</p>}
                         {success && <p className="text-green-500 mt-2">{success}</p>}
                         
                         <div className='flex justify-end mt-4 gap-x-4'>
-                            <button className="btn">Close</button>
-                            <button type='submit' className="btn" disabled={loading}>
+                            <button type='submit' className="btn bg-info/80 text-base-100" disabled={loading}>
                                 {loading ? 'Loading...' : 'Create'}
                             </button>
                         </div>

@@ -96,7 +96,7 @@ router.post('/login', async (req, res) => {
             { expiresIn: '1h' }
         );
 
-        res.status(200).json({ message: 'Login successful', token, user: { personalID, firstname: user.firstname, lastname: user.lastname, role: user.role } });
+        res.status(200).json({ message: 'Login successful', token, user: { _id: user._id, personalID, firstname: user.firstname, lastname: user.lastname, role: user.role , email: user.email, curriculumId: user.curriculumId, totalCredits: user.totalCredits, GPA: user.GPA, subjects: user.subjects } });
     } catch (error) {
         console.error("Login Error:", error);
         res.status(500).json({ message: 'Server error', error });

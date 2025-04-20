@@ -1,7 +1,6 @@
 import React from 'react'
 import CreateCategory from './CreateCategory'
 import Categorylist from './Categorylist'
-import Pinpagecat from './Pinpagecat'
 
 const Category:React.FC = () => {
     return (
@@ -13,7 +12,6 @@ const Category:React.FC = () => {
                 </div>
                 <div className='flex flex-col gap-y-4'>
                     <Categorylist/>
-                    <Pinpagecat/>
                 </div>
             </div>
         </div>

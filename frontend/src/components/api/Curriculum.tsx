@@ -83,7 +83,7 @@ export const CurriculumProvider = ({ children } : { children: React.ReactNode })
         setError(null);
         setSuccess(null);
         try {
-            const response = await api.put(`/edit/curriculum/${id}`, updatedCurriculum);
+            const response = await api.patch(`/edit/curriculum/${id}`, updatedCurriculum);
             
             // อัปเดตค่าใน state
             setCurriculums(curriculums.map(curriculum => 
