@@ -1,6 +1,7 @@
 import React, { useRef } from 'react'
 import CourseModal from '../Modal/CourseModal';
 import { useUserContext } from '../../../api/UserProvider';
+import SaveBtn from '../List/SaveBtn';
 
 const Info:React.FC = () => {
 
@@ -15,9 +16,6 @@ const Info:React.FC = () => {
                 <p className='text-lg'><strong>Name :</strong> {user.firstname + " " + user.lastname || "No name"}</p>
                 <p className='text-lg'><strong>credits :</strong> {user.totalCredits || "0"} </p>
                 <p className='text-lg'><strong>GPA : </strong>{user.GPA?.toFixed(2) || "0.00"}</p>
-            </div>
-            <div className='flex items-end'>
-                <CourseModal/>
             </div>
         </div>
     )

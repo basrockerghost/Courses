@@ -8,6 +8,7 @@ const addUser = require('./routes/Adduser/addUser');
 const addFileUser = require('./routes/Adduser/addFileUser');
 const selectCurruculum = require('./routes/User/selectCurriculum');4
 const SubjectToUser = require('./routes/User/addSubject');
+const StdToTeacher = require('./routes/User/addStdToTeacher');
 //get
 const user = require('./routes/User/showUser');
 const course = require('./routes/Coursesetup/Course/showCourse');
@@ -52,7 +53,7 @@ mongoose.connect(process.env.MONGO_URI, {
       .catch(err => console.error('❌ MongoDB Connection Failed:', err));
 
 app.use('/api/auth', authRoutes);
-app.use('/api/add', addUser, selectCurruculum, SubjectToUser);
+app.use('/api/add', addUser, selectCurruculum, SubjectToUser, StdToTeacher);
 app.use('/api/upload', addFileUser);
 app.use('/api/create', createCourse, createCategory, createGroup, createSub, createCurriculum, postStructure);
 app.use('/api/get', user, course, category, group, subject, curriculum, structure);

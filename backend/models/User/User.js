@@ -36,6 +36,14 @@ const UserSchema = new mongoose.Schema({
         enum: ['student', 'teacher', 'admin'], 
         default: 'student' 
     },
+    resetOtp: { 
+        type: String,
+        default: null
+    },
+    otpExpires: { 
+        type: Date,
+        default: null
+    },    
     profileImage: { 
         type: String, 
         default: '' 
@@ -68,7 +76,7 @@ const UserSchema = new mongoose.Schema({
             },
             grade: {
                 type: String,
-                enum: ['A', 'B+', 'B', 'C+', 'C', 'D+', 'D', 'F'],
+                enum: ['A', 'B+', 'B', 'C+', 'C', 'D+', 'D', 'F', 'T'],
                 default: null
             },
             description: {
@@ -76,7 +84,16 @@ const UserSchema = new mongoose.Schema({
                 default: null
             }
         }, 
-    ]
+    ],
+    students: [
+        {
+            studentsId: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'User',
+                required: true
+            }
+        }
+    ],
 }, { timestamps: true });
 
 // **แฮชรหัสผ่านก่อนบันทึก**
@@ -102,36 +119,32 @@ UserSchema.methods.calculateGPA = function () {
         'D+': 1.5,
         'D': 1.0,
         'F': 0.0,
+        'T': 0.0,
     };
 
     let totalPoints = 0;
-    let totalCredits = 0;
+    let gpaCredits = 0;
+    let allCredits = 0;
 
-    // this.subjects.forEach((subject) => {
-    //     if (
-    //         subject.grade &&
-    //         gradePoints.hasOwnProperty(subject.grade) &&
-    //         subject.grade !== 'F' // 💥 ข้ามวิชาที่ได้ F
-    //     ) {
-    //         totalPoints += gradePoints[subject.grade] * subject.credits;
-    //         totalCredits += subject.credits;
-    //     }
-    // });
-
-    // this.GPA = totalCredits === 0 ? 0.0 : parseFloat((totalPoints / totalCredits).toFixed(2));
     this.subjects.forEach(subject => {
-        if (
-            subject.grade &&
-            gradePoints.hasOwnProperty(subject.grade) &&
-            subject.grade !== 'F'
-        ) {
-            totalPoints += gradePoints[subject.grade] * subject.credits;
-            totalCredits += subject.credits;
+        if (subject.grade && subject.credits) {
+            if (gradePoints.hasOwnProperty(subject.grade)) {
+                // เพิ่มทุกวิชาใน totalCredits
+                if (subject.grade !== 'F') {
+                    allCredits += subject.credits;
+                }
+
+                // เพิ่มเฉพาะวิชาที่ไม่ใช่ F หรือ T ใน GPA calculation
+                if (subject.grade !== 'F' && subject.grade !== 'T') {
+                    totalPoints += gradePoints[subject.grade] * subject.credits;
+                    gpaCredits += subject.credits;
+                }
+            }
         }
     });
 
-    this.totalCredits = totalCredits;
-    this.GPA = totalCredits === 0 ? 0.0 : parseFloat((totalPoints / totalCredits).toFixed(2));
+    this.totalCredits = allCredits;
+    this.GPA = gpaCredits === 0 ? 0.0 : parseFloat((totalPoints / gpaCredits).toFixed(2));
 };
 
 

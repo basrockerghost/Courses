@@ -11,7 +11,7 @@ const stdHome:React.FC = () => {
             </div>
             <div className='relative z-10 flex flex-col px-4 md:h-[var(--displayheight)]'>
                 <Info/>
-                <div className='max-h-[var(--height)] mt-4 overflow-y-auto scrollbar-hide border border-base-300 rounded-lg'>
+                <div className=' mt-4 scrollbar-hide border border-base-content/25 rounded-lg'>
                     <StdList/>
                 </div>
             </div>

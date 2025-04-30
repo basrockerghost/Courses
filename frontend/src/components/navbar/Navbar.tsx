@@ -2,6 +2,7 @@ import React, { useRef } from 'react'
 import Theme from './Theme'
 import Profile from './profile/Profile';
 import { useNavigate } from 'react-router-dom';
+import MenuNavbar from './MenuNavbar';
 
 const Navbar:React.FC = () => {
 
@@ -20,14 +21,15 @@ const Navbar:React.FC = () => {
       };
 
     return (
-        <div className="navbar md:flex hidden bg-base-100 shadow-sm border-b border-gray-300">
+        <div className="navbar bg-base-100 shadow-sm border-b border-gray-300">
             <div className="navbar-start">
+                <MenuNavbar/>
                 <a className="btn btn-ghost text-xl">Something</a>
             </div>
             <div className="navbar-end flex gap-x-4">
-                <Theme/>
+                {/* <Theme/> */}
                 <div className='dropdown'>
-                    <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
+                    {/* <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
                         <div className="indicator">
                             <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -53,7 +55,7 @@ const Navbar:React.FC = () => {
                                 <div className="text-xs font-semibold opacity-60">About</div>
                             </div>
                         </li>
-                    </ul>
+                    </ul> */}
                 </div>
                 <div className="dropdown dropdown-end">
                     <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">

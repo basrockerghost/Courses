@@ -7,8 +7,10 @@
   --displayheight: calc(100vh - 8.5vh);
   --coursetableH: calc(100vh - 26vh);
   --tlistH: calc(100vh - 56vh);
-  --tprolistH: calc(100vh - 52.1vh);
+  --tprolistH: calc(100vh - 39vh);
+  --sprolistH: calc(100vh - 45vh);
   --height: calc(100vh - 32.5vh);
+  --table: calc(100vh - 40.5vh);
 }
 
 @theme {

@@ -1,12 +1,24 @@
 import React from 'react'
+import { useUserContext } from '../../../api/UserProvider'
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const Tprolist:React.FC = () => {
+
+    const location = useLocation();
+    const teacher = location.state?.teacher;
+
+    const {users} = useUserContext();
+
+    const navigate = useNavigate();
+    const handleClick = (student: any) => {
+        navigate('/student', {state: {student}})
+    }
+
     return (
         <div className="overflow-x-visible rounded-box border border-base-content/5 bg-base-100 max-h-[var(--tlistH)]">
             <table className="table">
                 <thead>
                     <tr>
-                        <th>Checkin</th>
                         <th>StudentID</th>
                         <th>Name</th>
                         <th>Credits</th>
@@ -14,19 +26,18 @@ const Tprolist:React.FC = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>
-                            <a role='button' className="btn btn-sm" href='/tprofile'>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-                            </svg>
-                            </a>
-                        </td>
-                        <td>6404800013</td>
-                        <td>Something</td>
-                        <td>0</td>
-                        <td>0.00</td>
-                    </tr>
+                {teacher.students
+                    .map((s: any) => users.find((u: any) => u._id === s.studentsId))
+                    .filter((student: any) => student !== undefined)
+                    .map((student: any) => (
+                        <tr key={student._id} className='cursor-pointer hover:bg-base-200' onClick={() => handleClick(student)}>
+                            <td>{student.personalID}</td>
+                            <td>{student.firstname} {student.lastname}</td>
+                            <td>{student.totalCredits}</td>
+                            <td>{student.GPA}</td>
+                        </tr>
+                    ))
+                }
                 </tbody>
             </table>
         </div>

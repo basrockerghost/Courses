@@ -61,8 +61,7 @@ const CreateCurr:React.FC = () => {
                         {success && <p className="text-green-500 mt-2">{success}</p>}
                         
                         <div className='flex justify-end mt-4 gap-x-4'>
-                            <button className="btn">Close</button>
-                            <button type='submit' className="btn" disabled={loading}>
+                            <button type='submit' className="btn bg-info text-base-100" disabled={loading}>
                                 {loading ? 'Loading...' : 'Create'}
                             </button>
                         </div>

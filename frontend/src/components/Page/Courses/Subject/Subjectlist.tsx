@@ -1,6 +1,7 @@
 import React from 'react'
 import Sdropmenu from './Sdropmenu'
 import { useSubjectContext } from '../../../api/SubjectProvider';
+import ViewDetail from './ViewDetail';
 
 const Subjectlist:React.FC = () => {
 
@@ -27,8 +28,12 @@ const Subjectlist:React.FC = () => {
                                 <td>{subject.subjectnameTH}</td>
                                 <td>{subject.subjectnameEN}</td>
                                 <td>{subject.credits}</td>
-                                <td className='relative w-52'>
-                                    <Sdropmenu subjectId={subject._id} />
+                                <td className='w-36'>
+                                    {/* <Sdropmenu subjectId={subject._id} /> */}
+                                    <div className='flex items-center gap-x-4'>
+                                        <ViewDetail subjectId={subject._id} />
+                                        <Sdropmenu subjectId={subject._id} />
+                                    </div>
                                 </td>
                             </tr>
                         ))

@@ -13,9 +13,10 @@ const Sedit:React.FC<SEditProps> = ({ modalRef, user }) => {
     const [data, setData] = useState({
         firstname: user.firstname,
         lastname: user.lastname,
+        role: user.role
     });
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         setData({ ...data, [e.target.id]: e.target.value });
     };
 
@@ -37,6 +38,11 @@ const Sedit:React.FC<SEditProps> = ({ modalRef, user }) => {
                     <input type="text" id='firstname' className='input input-neutral w-full border-theme ' value={data.firstname} onChange={handleChange} />
                     <label htmlFor="lastname">นามสกุล</label>
                     <input type="text" id='lastname' className='input input-theme w-full border-theme' value={data.lastname} onChange={handleChange} />
+                    <label htmlFor="role">ตำแหน่ง</label>
+                    <select name="role" className='input input-neutral w-full border-theme' value={data.role} onChange={handleChange} id='role'>
+                        <option value="student">นักเรียน</option>
+                        <option value="teacher">อาจารย์</option>
+                    </select>
 
                     {error && <p className="text-red-500 mt-2">{error}</p>}
                     {success && <p className="text-green-500 mt-2">{success}</p>}

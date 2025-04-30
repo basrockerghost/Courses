@@ -31,9 +31,9 @@ const CourseModal:React.FC = () => {
 
     return (
         <div>
-            {/* show structure */}
-            
-            <button onClick={openModal} className="btn bg-accent text-base-100">เลือกหลักสูตร</button>
+            {/* {!user.curriculumId && ( */}
+                <button onClick={openModal} className="btn bg-accent text-base-100">เลือกหลักสูตร</button>
+            {/* )} */}
             <dialog ref={modalRef} id="my_modal_3" className="modal">
                 <div className="modal-box">
                     <form method="dialog">
@@ -44,11 +44,14 @@ const CourseModal:React.FC = () => {
                         <h3 className="font-bold text-lg">เลือกหลักสูตรที่ใช้ศึกษา</h3>
                         <select className='select w-full border-theme' value={selectedCurriculumId} onChange={handleChange}>
                             <option value="" disabled={true}> --- หลักสูตร ---</option>
-                            {curriculums.map((curriculum) => (
-                                <option key={curriculum._id} value={curriculum._id}>
-                                    {curriculum.curriculumnameTH}
-                                </option>
-                            ))}
+                            {curriculums
+                                .filter(c => c.status === "พร้อมใช้งาน")
+                                .map(curriculum => (
+                                    <option key={curriculum._id} value={curriculum._id}>
+                                        {curriculum.curriculumnameTH}
+                                    </option>
+                                ))
+                            }
                         </select>
                     </div>
                     <div className='flex justify-end mt-4'>

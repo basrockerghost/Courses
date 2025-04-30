@@ -18,7 +18,7 @@ const showCur:React.FC = () => {
                 </div>
                 <div className='flex flex-col gap-y-4'>
                     <ShowDetailCur />
-                    <div className='max-h-[var(--height)] overflow-y-auto scrollbar-hide border border-base-300 rounded-lg'>
+                    <div className='max-h-[var(--height)] overflow-y-auto scrollbar-hide '>
                     <ListCurtail/>
                     </div>
                 </div>

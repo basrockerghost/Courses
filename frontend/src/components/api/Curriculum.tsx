@@ -6,7 +6,7 @@ interface Curriculum {
     curriculumnameTH: string;
     curriculumnameEN: string;
     status: "ไม่พร้อมใช้งาน" | "ปิดปรับปรุง" | "พร้อมใช้งาน"
-    
+    description: string;
 }
 
 interface CurriculumContextType {

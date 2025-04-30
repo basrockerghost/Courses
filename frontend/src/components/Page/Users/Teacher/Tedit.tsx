@@ -13,10 +13,10 @@ const Tedit:React.FC<TEditProps> = ({modalRef, user}) => {
     const [data, setData] = useState({
         firstname: user.firstname,
         lastname: user.lastname,
-        personalID: user.personalID,
+        role: user.role
     })
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         setData({ ...data, [e.target.id]: e.target.value });
     };
 
@@ -38,20 +38,19 @@ const Tedit:React.FC<TEditProps> = ({modalRef, user}) => {
                     <input type="text" id='firstname' className='input input-neutral w-full border-theme ' value={data.firstname} onChange={handleChange} />
                     <label htmlFor="lastname">นามสกุล</label>
                     <input type="text" id='lastname' className='input input-theme w-full border-theme' value={data.lastname} onChange={handleChange} />
-                    <label htmlFor="personalId">รหัสอาจารย์</label>
-                    <input type="text" id='personalId' className='input input-theme w-full border-theme' value={data.personalID} onChange={handleChange} />
+                    <label htmlFor="role">ตำแหน่ง</label>
+                    <select name="role" className='input input-neutral w-full cursor-pointer border-theme' value={data.role} onChange={handleChange} id='role'>
+                        <option value="student">นักเรียน</option>
+                        <option value="teacher">อาจารย์</option>
+                    </select>
 
                     {error && <p className="text-red-500 mt-2">{error}</p>}
                     {success && <p className="text-green-500 mt-2">{success}</p>}
 
-                    <div className="modal-action gap-x-4">
-                        <form method="dialog">
-                            {/* if there is a button, it will close the modal */}
-                            <div className='flex gap-x-4'>
-                                <button className="btn bg-red-400 hover:bg-red-500 text-white">Close</button>
-                                <button className="btn bg-green-400 hover:bg-green-500 text-white">Save</button>
-                            </div>
-                        </form>
+                    <div className='flex justify-end mt-4 gap-x-4'>
+                        <button type='submit' className="btn bg-success text-base-100" disabled={loading}>
+                            {loading ? 'Loading...' : 'Save'}
+                        </button>
                     </div>
                 </form>
             </div>

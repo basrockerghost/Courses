@@ -1,39 +1,46 @@
 import React from 'react'
 import Sdropmenu from './Sdropmenu'
 import { useUserContext } from '../../../api/UserProvider'
+import ViewDetail from './ViewDetail'
+import { useNavigate } from 'react-router-dom'
 
 const Slist:React.FC = () => {
 
     const { users } = useUserContext()
-    const students = users.filter(user => user.role === 'student')
+    const students = users.filter((user: any) => user.role === 'student')
+
+    const navigate = useNavigate();
+    const handleClick = (student: any) => {
+        navigate('/student', {state: {student}})
+    }
 
     return (
         <div className="overflow-x-auto rounded-box border border-base-content/5 bg-base-100 max-h-[var(--tlistH)]">
             <table className="table">
                 <thead>
                     <tr>
-                        <th>Checkin</th>
                         <th>StudentID</th>
                         <th>Name</th>
                         <th>Role</th>
+                        <th>Credits</th>
+                        <th>GPA</th>
                         <th>Menu</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {students.map(student => (
-                        <tr key={student._id}>
-                            <td>
-                                <a role='button' className="btn btn-sm" href='/sprofile'>
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-                                </svg>
-                                </a>
-                            </td>
-                            <td>{student.personalID}</td>
-                            <td>{student.firstname} {student.lastname} </td>
-                            <td>{student.role}</td>
-                            <td className='relative w-52'>
-                                <Sdropmenu userId={student._id}/>
+                    {students.map((s: any) => (
+                        <tr key={s._id} className='cursor-pointer hover:bg-base-200' onClick={() => handleClick(s)}>
+                            <td>{s.personalID}</td>
+                            <td>{s.firstname} {s.lastname} </td>
+                            <td>{s.role}</td>
+                            <td>{s.totalCredits}</td>
+                            <td>{s.GPA}</td>
+                            <td className='w-36'>
+                                {/* <Sdropmenu userId={s._id}/> */}
+                                <div className='flex items-center gap-x-4'>
+                                    <ViewDetail userId={s._id} />
+                                    <Sdropmenu userId={s._id} />
+                                </div>
                             </td>
                         </tr>
                     ))}

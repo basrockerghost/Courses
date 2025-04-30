@@ -31,10 +31,16 @@ const UserContext = createContext<any>(null);
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [users, setUsers] = useState<User[]>([]);
   const [user, setUser] = useState(() => {
-    const storedUser = localStorage.getItem('user');
-    return storedUser ? JSON.parse(storedUser) : null;
-    
+    try {
+      const storedUser = localStorage.getItem('user');
+      if (!storedUser || storedUser === "undefined") return null;
+      return JSON.parse(storedUser);
+    } catch (e) {
+      console.error("Failed to parse user from localStorage:", e);
+      return null;
+    }
   });
+  
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -63,11 +69,11 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     setSuccess(null);
     try {
       const response = await api.patch(`/add/user/${id}/curriculum`, { curriculumId });
-      setUsers(users.map((user) => (user._id === id ? response.data : user)));
+      setUsers(users.map((user) => (user._id === id ? response.data.user : user)));
       setSuccess("Curriculum selected successfully");
       fetchUsers();
-      // setUser(response.data);
-      // localStorage.setItem('user', JSON.stringify(response.data));
+      setUser(response.data.user);
+      localStorage.setItem('user', JSON.stringify(response.data.user));
     } catch (err: any) {
       setError(err.response?.data?.message || "Failed to select curriculum");
     } finally {
@@ -92,6 +98,22 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       setLoading(false);
     }
   };
+  
+  const addStdToTeacher = async (teacherId: string, studentId: string) => {
+    setLoading(true);
+    setError(null);
+    setSuccess(null);
+    try {
+      const response = await api.patch(`/add/teacher/${teacherId}/add-student`, { studentId });
+      setUsers(users.map((user) => (user._id === teacherId ? response.data.teacher : user)));
+      setSuccess("Student added to teacher successfully");
+      fetchUsers();
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Failed to add student to teacher");
+    } finally {
+      setLoading(false);
+    }
+  }
   
   const updateSubjectGrade = async (userId: string, subjectId: string, grade: string) => {
     setLoading(true);
@@ -149,6 +171,34 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const requestReset = async (personalID: string, email: string) => {
+    setLoading(true);
+    setError(null);
+    setSuccess(null);
+    try {
+      const response = await api.post('/auth/request-reset', { personalID, email });
+      setSuccess(response.data.message);
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Failed to request reset password");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const resetpassword = async (personalID: string, email: string, newPassword: string, conPassword: string) => {
+    setLoading(true);
+    setError(null);
+    setSuccess(null);
+    try {
+      const response = await api.post('/auth/reset-password', { personalID, email, newPassword, conPassword });
+      setSuccess(response.data.message);
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Failed to reset password");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   const deleteUser = async (id: string) => {
     setLoading(true);
     setError(null);
@@ -174,6 +224,8 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       setUsers(users.map((user) => (user._id === id ? response.data : user)));
       setSuccess("User updated successfully");
       fetchUsers();
+      setUser(response.data.user);
+      localStorage.setItem('user', JSON.stringify(response.data));
     } catch (err: any) {
       setError(err.response?.data?.message || "Failed to update user");
     } finally {
@@ -181,7 +233,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  return <UserContext.Provider value={{ users, user, setUser, loading, error, success, selectCurriculum, addSubjectToUser, updateSubjectGrade, removeSubjectFromUser, addUser, deleteUser, updateUser }}>{children}</UserContext.Provider>;
+  return <UserContext.Provider value={{ users, user, setUser, loading, error, success, selectCurriculum, addSubjectToUser, addStdToTeacher, updateSubjectGrade, removeSubjectFromUser, addUser, requestReset, resetpassword, deleteUser, updateUser }}>{children}</UserContext.Provider>;
 };
 
 export const useUserContext = () => {

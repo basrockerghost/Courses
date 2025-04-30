@@ -13,7 +13,7 @@ const Dropmenu:React.FC<Props> = ({ teacherId  }) => {
     const [selectedUser, setSelectedUser] = useState<any>(null);
     
     const TEdit = () => {
-        const user = users.find((user) => user._id === teacherId);
+        const user = users.find((user : any) => user._id === teacherId);
         if(user) {
             setSelectedUser(user);
             modalRef.current?.showModal();
@@ -33,8 +33,8 @@ const Dropmenu:React.FC<Props> = ({ teacherId  }) => {
     };
 
     return (
-        <div className="dropdown dropdown-right ">
-            <div tabIndex={0} role="button" className="btn btn-sm">Click</div>
+        <div className="dropdown dropdown-left dropdown-end">
+            <div tabIndex={0} role="button" className="btn btn-sm bg-warning/75 text-base-100">More</div>
             <ul tabIndex={0} className="absolute dropdown-content menu bg-base-100 rounded-box z-30 w-36 p-2 shadow-sm">
                 <li><a className='hover:bg-blue-400 hover:text-white' onClick={TEdit}>Edit</a></li>
                 <li><a className='hover:bg-red-400 hover:text-white' onClick={handleDelete} >Delete</a></li>

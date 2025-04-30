@@ -5,7 +5,6 @@ interface Prop {
     courseId: string;
 }
 
-
 const ViewDetail:React.FC<Prop> = ({ courseId }) => {
 
     const modalRef = useRef<HTMLDialogElement | null>(null);
@@ -19,7 +18,7 @@ const ViewDetail:React.FC<Prop> = ({ courseId }) => {
 
     return (
         <div>
-            <button onClick={openModal} className="btn btn-sm bg-info/75 text-base-100"> View</button>
+            <button onClick={openModal} className="btn btn-sm bg-info/75 text-base-100 ">View</button>
             <dialog ref={modalRef} id="my_modal_3" className="modal">
                 <div className="modal-box">
                     <form method="dialog">

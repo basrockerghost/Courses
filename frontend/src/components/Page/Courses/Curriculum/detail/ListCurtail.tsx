@@ -20,11 +20,7 @@ const ListCurtail:React.FC = () => {
     const {courses} = useCourseContext();
 
 
-    const structure = structures.find(s => s.curriculumId === curriculumId)
-    // if (!structure) return <p>Loading structure...</p>;
-    
-    // console.log("Structure object:", structure?._id);
-    // console.log(structure?.curriculumId)
+    const structure = structures.find(s => s.curriculumId === curriculumId);
     
     const course = structure ? courses.find(c => c._id === structure.courseId) : undefined;
 
@@ -68,67 +64,70 @@ const ListCurtail:React.FC = () => {
             </h2>
             {structure?.categories.map(categoryItem => {
                 const categoryDetail = categories.find(cat => cat._id === categoryItem.categoryId);
+                let isFirstGroup = true;
 
                 return (
-                    <div key={categoryItem.categoryId} className="p-4 rounded-lg shadow overflow-y-auto">
-                        <h3 className="flex items-center gap-x-4 text-lg font-semibold">
-                            {categoryDetail?.catnameTH || "ไม่พบข้อมูล"}
-                            <span className='text-sm font-normal text-gray-500'>
-                                รวม: {calculateCategoryCredits(categoryItem)} หน่วยกิต
-                            </span>
-                            {categoryDetail && (
-                                <Addgroup structureId={structure?._id ?? ''} categoryId={categoryItem.categoryId} />
-                            )}
-                        </h3>
+                    <div key={categoryItem.categoryId} className="overflow-x-auto">
 
                         {categoryItem.groups.map(groupItem => {
                             const groupDetail = groups.find(g => g._id === groupItem.groupId);
 
                             return (
-                                <div key={groupItem.groupId} className="ml-4 mt-2 p-2 border-l-2">
-                                    <h4 className="flex items-center gap-x-4 text-md font-medium">
-                                        {groupDetail?.groupnameTH || "ไม่พบข้อมูล"}
-                                        <span className='text-sm font-normal text-gray-500'>
-                                            รวม: {calculateGroupCredits(groupItem)} หน่วยกิต
-                                        </span>
-                                        {groupDetail && (
-                                            <AddSub structureId={structure?._id ?? ''} categoryId={categoryItem.categoryId} groupId={groupItem.groupId} />
-                                        )}
-                                    </h4>
-
+                                <div key={groupItem.groupId}>
+                                    {isFirstGroup && (
+                                        <div className='flex items-center gap-x-4 justify-center mb-4'>
+                                            <h3 className="text-center text-lg font-semibold">
+                                                --- {categoryDetail?.catnameTH || "ไม่พบข้อมูล"} ---
+                                            </h3>
+                                            <span className='text-sm font-normal text-gray-500'>
+                                                รวม: {calculateCategoryCredits(categoryItem)} หน่วยกิต
+                                            </span>
+                                            {categoryDetail && (
+                                                <Addgroup structureId={structure?._id ?? ''} categoryId={categoryItem.categoryId} />
+                                            )} 
+                                        </div>
+                                    )}
+                                    {isFirstGroup = false}
                                     <div className="overflow-x-auto mt-4 rounded-box border border-base-content/5 bg-base-100">
                                         <table className="table">
-                                            {/* head */}
-                                            <thead>
-                                                <tr>
-                                                    <th>รหัสวิชา</th>
-                                                    <th>ชื่อวิชา (TH)</th>
-                                                    <th>ชื่อวิชา (EN)</th>
-                                                    <th>หน่วยกิต</th>
-                                                    <th className='flex justify-center'>ลบ</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {/* row 1 */}
-                                                {groupItem.subjects.map(subjectItem => {
-                                                    const subjectDetail = subjects.find(s => s._id === subjectItem.subjectId);
-
-                                                    return (
-                                                        // <li key={subjectItem.subjectId} className="text-sm">
-                                                        //     วิชา: {subjectDetail?.subjectnameTH || "ไม่พบข้อมูล"}
-                                                        // </li>
-                                                        <tr key={subjectItem.subjectId}>
-                                                            <td className='w-36'>{subjectDetail?.subjectID || "ไม่พบข้อมูล"}</td>
-                                                            <td className='w-80'>{subjectDetail?.subjectnameTH || "ไม่พบข้อมูล"}</td>
-                                                            <td className='w-80'>{subjectDetail?.subjectnameEN || "ไม่พบข้อมูล"}</td>
-                                                            <td className='w-24'>{subjectDetail?.credits || "ไม่พบข้อมูล"}</td>
-                                                            <td className='flex justify-center'>
-                                                                <button className='btn bg-error text-base-100' onClick={() => handleDelete(structure._id, categoryItem.categoryId, groupItem.groupId, subjectItem.subjectId)}>ลบ</button>
-                                                            </td>
-                                                        </tr>
-                                                    );
-                                                })}
-                                            </tbody>
+                                                <thead>
+                                                    <tr>
+                                                        <th className='text-center' colSpan={7}>
+                                                            <div className='flex justify-center items-center gap-x-4'>
+                                                            {groupDetail?.groupnameTH || "ไม่พบข้อมูล"}
+                                                            <span className='text-sm font-normal text-gray-500'>
+                                                                รวม: {calculateGroupCredits(groupItem)} หน่วยกิต
+                                                            </span>
+                                                            {groupDetail && (
+                                                                <AddSub structureId={structure?._id ?? ''} categoryId={categoryItem.categoryId} groupId={groupItem.groupId} />
+                                                            )}
+                                                            </div>
+                                                        </th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>รหัสวิชา</th>
+                                                        <th>ชื่อวิชา (TH)</th>
+                                                        <th>ชื่อวิชา (EN)</th>
+                                                        <th>หน่วยกิต</th>
+                                                        <th className='flex'>ลบ</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {groupItem.subjects.map(subjectItem => {
+                                                        const subjectDetail = subjects.find(s => s._id === subjectItem.subjectId);
+                                                        return (
+                                                            <tr key={subjectItem.subjectId}>
+                                                                <td className='w-36'>{subjectDetail?.subjectID || "ไม่พบข้อมูล"}</td>
+                                                                <td className='w-80'>{subjectDetail?.subjectnameTH || "ไม่พบข้อมูล"}</td>
+                                                                <td className='w-80'>{subjectDetail?.subjectnameEN || "ไม่พบข้อมูล"}</td>
+                                                                <td className='w-24'>{subjectDetail?.credits || "ไม่พบข้อมูล"}</td>
+                                                                <td className='w-24'>
+                                                                    <button className='btn bg-error text-base-100' onClick={() => handleDelete(structure._id, categoryItem.categoryId, groupItem.groupId, subjectItem.subjectId)}>ลบ</button>
+                                                                </td>
+                                                            </tr>
+                                                        );
+                                                    })}
+                                                </tbody>
                                         </table>
                                     </div>
                                 </div>

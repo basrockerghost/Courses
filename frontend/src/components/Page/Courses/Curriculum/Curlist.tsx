@@ -2,6 +2,7 @@ import React from 'react'
 import { useCurriculumContext } from '../../../api/Curriculum'
 import CurMenu from './CurMenu';
 import { useNavigate } from 'react-router-dom';
+import ViewDetail from './ViewDetail';
 
 const Curlist:React.FC = () => {
 
@@ -31,8 +32,11 @@ const Curlist:React.FC = () => {
                                     <td>{curriculum.curriculumnameTH}</td>
                                     <td>{curriculum.curriculumnameEN}</td>
                                     <td>{curriculum.status}</td>
-                                    <td onClick={(e) => e.stopPropagation()}>
-                                        <CurMenu curId={curriculum._id} />
+                                    <td className='w-36' onClick={(e) => e.stopPropagation()}>
+                                        <div className='flex items-center gap-x-4'>
+                                            <ViewDetail curId={curriculum._id} />
+                                            <CurMenu curId={curriculum._id} />
+                                        </div>
                                     </td>
                                 </tr>
                             ))

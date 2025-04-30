@@ -36,20 +36,23 @@ const Loginform:React.FC = () => {
                 password: ''
             });
             const { token, user, message } = response.data;
+            setSuccess(message);
+            if (user.role === 'student') {
+                // navigate('/home', { replace: true });
+                navigate('/home');
+            } else if (user.role === 'admin') {
+                // navigate('/dashboard', { replace: true });
+                navigate('/dashboard');
+            } else if (user.role === 'teacher') {
+                navigate('/homeT');
+            } else {
+                setError('User role is not recognized');
+            }
 
             localStorage.setItem('token', token);
             localStorage.setItem('user', JSON.stringify(user));
             setUser(user);
             console.log('Save token in storage', token);
-
-            // ตรวจสอบ role แล้ว navigate ตาม role
-            if (user.role === 'student') {
-                navigate('/home', { state: { success: message } });
-            } else if (user.role === 'admin') {
-                navigate('/dashboard', { state: { success: message } });
-            } else {
-                setError('User role is not recognized');
-            }
         } catch (err: any) {
             setError(err.response?.data?.message || 'Login failed');
         } finally {
@@ -70,7 +73,7 @@ const Loginform:React.FC = () => {
             <input type="password" id='password' className="input border-theme w-full" placeholder="Password" value={data.password} onChange={handleChange} required />
 
             <div className='flex items-center justify-between mt-2'>
-                <a href="" className='link link-hover'>forget password</a>
+                <a href="/request-reset" className='link link-hover'>forget password</a>
                 <a href="/register" className='link link-hover'>create account</a>
             </div>
 

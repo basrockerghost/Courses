@@ -30,8 +30,8 @@ const CourseList:React.FC = () => {
                                 <td className='w-48'>{course.courseStart} - {course.courseEnd}</td>
                                 <td className='w-36'>
                                     <div className='flex items-center gap-x-4'>
-                                        <Cdropmenu courseId={course._id} />
                                         <ViewDetail courseId={course._id} />
+                                        <Cdropmenu courseId={course._id} />
                                     </div>
                                 </td>
                             </tr>

@@ -3,10 +3,11 @@ const express = require('express');
 const router = express.Router();
 const User = require('../../models/User/User');
 
-router.patch('/user/:userId/curriculum/', async (req, res) => {
+router.patch('/user/:userId/curriculum', async (req, res) => {
     
     try {
-        const { userId, curriculumId } = req.params;
+        const { userId} = req.params;
+        const { curriculumId } = req.body;
         const updatedUser = await User.findByIdAndUpdate(
             userId,
                 { curriculumId: curriculumId },
