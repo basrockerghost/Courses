@@ -1,9 +1,7 @@
 import React, { useRef, useState } from 'react'
-import { useLocation } from 'react-router-dom';
-import api from '../../../api/Api'
 import { useGroupContext } from '../../../api/GroupProvider';
 
-const Creategroup:React.FC = () => {
+const Creategroup:React.FC<{setSearchText: (text: string) => void}> = ({ setSearchText }) => {
 
     const modalRef = useRef<HTMLDialogElement | null>(null);
 
@@ -13,10 +11,6 @@ const Creategroup:React.FC = () => {
         groupnameTH: '',
         groupnameEN: '',
     })
-    
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setData({ ...data, [e.target.id]: e.target.value });
-    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -39,7 +33,12 @@ const Creategroup:React.FC = () => {
         <div className='flex flex-rows gap-x-4 items-center'>
             <label className="input input-sm">
                 <svg className="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g strokeLinejoin="round" strokeLinecap="round" strokeWidth="2.5" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></g></svg>
-                <input type="search" className="grow" placeholder="Search" />
+                <input
+                    type="search"
+                    className="grow"
+                    placeholder="Search"
+                    onChange={(e) => setSearchText(e.target.value)}
+                />
             </label>
             <button className="btn bg-blue-400 text-white rounded-2xl" onClick={CreateGroupModal}>Create +</button>
             <dialog ref={modalRef} id="group" className="modal">

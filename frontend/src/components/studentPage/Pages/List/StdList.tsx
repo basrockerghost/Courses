@@ -10,7 +10,7 @@ import CourseModal from '../Modal/CourseModal';
 // student list for show course
 const StdList:React.FC = () => {
 
-    const {user, addSubjectToUser, updateSubjectGrade, removeSubjectFromUser} = useUserContext();
+    const {user, addSubjectToUser, addTermAndYear, updateSubjectGrade, removeSubjectFromUser} = useUserContext();
     const { structures } = useStructureContext();
     const {categories} = useCatContext();
     const {groups} = useGroupContext();
@@ -18,7 +18,7 @@ const StdList:React.FC = () => {
     const {courses} = useCourseContext();
 
     const [selectedSubjects, setSelectedSubjects] = useState<{
-        [subjectId: string]: { grade: string, description: string }
+        [subjectId: string]: { grade: string, description: string, termandyear: string }
     }>({});
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
@@ -33,6 +33,12 @@ const StdList:React.FC = () => {
     const getDescription = (subjectId: string) => {
         const selected = selectedSubjects[subjectId]?.description;
         const userSaved = userSubjects.find((s: any) => s.subjectId === subjectId)?.description;
+        return selected !== undefined && selected !== '' ? selected : userSaved || '';
+    };
+
+    const getTermAndYear = (subjectId: string) => {
+        const selected = selectedSubjects[subjectId]?.termandyear;
+        const userSaved = userSubjects.find((s: any) => s.subjectId === subjectId)?.termandyear;
         return selected !== undefined && selected !== '' ? selected : userSaved || '';
     };
 
@@ -59,7 +65,7 @@ const StdList:React.FC = () => {
                             className='btn bg-success text-base-100'
                             onClick={async () => {
                                 for (const subjectId in selectedSubjects) {
-                                const { grade, description } = selectedSubjects[subjectId];
+                                const { grade, description, termandyear } = selectedSubjects[subjectId];
                             
                                 if (!isSubjectSaved(subjectId)) {
                                     await addSubjectToUser(user._id, subjectId, description);
@@ -67,6 +73,9 @@ const StdList:React.FC = () => {
                             
                                 if (grade) {
                                     await updateSubjectGrade(user._id, subjectId, grade);
+                                }
+                                if (termandyear) {
+                                    await addTermAndYear(user._id, subjectId, termandyear);
                                 }
                                 }
                             
@@ -125,7 +134,8 @@ const StdList:React.FC = () => {
                                                         <th>ชื่อวิชา (EN)</th>
                                                         <th>หน่วยกิต</th>
                                                         <th>เกรด</th>
-                                                        <th>หมายเหตุ</th>
+                                                        <th className='w-36'>เทอม/ปี</th>
+                                                        <th >หมายเหตุ</th>
                                                         <th className='text-center'>ผ่าน/ไม่ผ่าน</th>
                                                     </tr>
                                                 </thead>
@@ -177,23 +187,37 @@ const StdList:React.FC = () => {
                                                                         <option>T</option>
                                                                     </select>
                                                                 </td>
-                                                                <td className='w-24'>
-                                                                    {/* <textarea 
-                                                                        className='p-1 h-10 rounded-md border-theme'
-                                                                        value={getDescription(subjectItem.subjectId)}
-                                                                        // disabled={isSubjectSaved(subjectItem.subjectId)}
-                                                                        disabled
+                                                                <td>
+                                                                    {/* select term and year */}
+                                                                    <select 
+                                                                        className="input input-neutral input-sm cursor-pointer md:w-24 max-w-xs border-theme"
+                                                                        value={getTermAndYear(subjectItem.subjectId)}
+                                                                        disabled={isSubjectSaved(subjectItem.subjectId)}
                                                                         onChange={(e) => {
-                                                                            const description = e.target.value;
+                                                                            const termandyear = e.target.value;
                                                                             setSelectedSubjects(prev => ({
                                                                                 ...prev,
                                                                                 [subjectItem.subjectId]: {
                                                                                     ...prev[subjectItem.subjectId],
-                                                                                    description
+                                                                                    termandyear
                                                                                 }
                                                                             }));
                                                                         }}
-                                                                    ></textarea> */}
+                                                                    >
+                                                                        <option>เทอม/ปี</option>
+                                                                        <option>1/2563</option>
+                                                                        <option>2/2563</option>
+                                                                        <option>1/2564</option>
+                                                                        <option>2/2564</option>
+                                                                        <option>1/2565</option>
+                                                                        <option>2/2565</option>
+                                                                        <option>1/2566</option>
+                                                                        <option>2/2566</option>
+                                                                        <option>1/2567</option>
+                                                                        <option>2/2567</option>
+                                                                    </select>
+                                                                </td>
+                                                                <td className='w-24'>
                                                                     {getDescription(subjectItem.subjectId)}
                                                                 </td>
                                                                 <td className='text-center w-24'>
@@ -218,7 +242,8 @@ const StdList:React.FC = () => {
                                                                                 if (isChecked) {
                                                                                     newState[subjectId] = {
                                                                                         grade: '',
-                                                                                        description: ''
+                                                                                        description: '',
+                                                                                        termandyear: ''
                                                                                     };
                                                                                 } else {
                                                                                     delete newState[subjectId];

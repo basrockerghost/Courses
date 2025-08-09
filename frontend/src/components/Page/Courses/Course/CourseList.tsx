@@ -4,8 +4,17 @@ import Cdropmenu from './Cdropmenu'
 import { useCourseContext } from '../../../api/CourseProvider';
 import ViewDetail from './ViewDetail';
 
-const CourseList:React.FC = () => {
+const CourseList:React.FC<{searchText: string}> = ({ searchText }) => {
     const { courses } = useCourseContext();
+
+    const filterCourses = (searchText: string) => {
+        if (!searchText) return courses;
+        return courses.filter(course =>
+            course.CSId.toLowerCase().includes(searchText.toLowerCase()) ||
+            course.coursenameTH.toLowerCase().includes(searchText.toLowerCase()) ||
+            course.coursenameEN.toLowerCase().includes(searchText.toLowerCase())
+        );
+    };
 
     return (
         <div className="rounded-box border border-base-content/5 bg-base-100 max-h-[var(--coursetableH)] overflow-x-auto">
@@ -21,28 +30,24 @@ const CourseList:React.FC = () => {
                     </tr>
                 </thead>
                 <tbody>
-                {courses.length > 0 ? (
-                        courses.map(course => (
+                    {filterCourses.length > 0 ? (
+                        filterCourses(searchText).map(course => (
                             <tr key={course._id}>
-                                <td className='w-32'>{course.CSId}</td>
-                                <td className='w-96'>{course.coursenameTH}</td>
-                                <td className='w-72'>{course.coursenameEN}</td>
-                                <td className='w-48'>{course.courseStart} - {course.courseEnd}</td>
-                                <td className='w-36'>
-                                    <div className='flex items-center gap-x-4'>
-                                        <ViewDetail courseId={course._id} />
-                                        <Cdropmenu courseId={course._id} />
-                                    </div>
+                                <td>{course.CSId}</td>
+                                <td>{course.coursenameTH}</td>
+                                <td>{course.coursenameEN}</td>
+                                <td>{course.courseEnd}</td>
+                                <td className='flex gap-x-2'>
+                                    <ViewDetail courseId={course._id} />
+                                    <Cdropmenu courseId={course._id} />
                                 </td>
                             </tr>
-                        ))
+                        ))  
                     ) : (
                         <tr>
-                            <td colSpan={6} className="text-center py-4">
-                                No courses available
-                            </td>
+                            <td colSpan={5} className="text-center py-4">ไม่พบข้อมูล</td>
                         </tr>
-                    )}
+                    )}                  
                 </tbody>
             </table>
         </div>

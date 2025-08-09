@@ -4,8 +4,8 @@ import Export from './Export'
 
 const Menureport:React.FC = () => {
     return (
-        <div className='flex items-center justify-between'>
-            <Filter/>
+        <div className='flex items-center justify-end'>
+            {/* <Filter/> */}
             <Export/>
         </div>
     )

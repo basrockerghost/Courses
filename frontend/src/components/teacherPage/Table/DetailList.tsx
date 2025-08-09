@@ -2,12 +2,20 @@ import React, { useState } from 'react'
 import { useLocation } from 'react-router-dom';
 import { useSubjectContext } from '../../api/SubjectProvider';
 import { useUserContext } from '../../api/UserProvider';
+import { useCourseContext } from '../../api/CourseProvider';
+import { useCatContext } from '../../api/CatProvider';
+import { useGroupContext } from '../../api/GroupProvider';
+import { useStructureContext } from '../../api/StructureProvider';
 
 const DetailList:React.FC = () => {
 
     const location = useLocation();
     const studentId = location.state?.studentId;
+    const {courses} = useCourseContext();
+    const {categories} = useCatContext();
+    const {groups} = useGroupContext()
     const {subjects} = useSubjectContext();
+    const {structures} = useStructureContext();
     const {addSubjectToUser} = useUserContext();
     const [success, setSuccess] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
@@ -61,11 +69,16 @@ const DetailList:React.FC = () => {
         }
     };
 
+    const structure = structures.find(s => s.curriculumId === student.curriculumId)
+    const course = structure ? courses.find(c => c._id === structure.courseId) : undefined;
+
     return (
-        <div className='flex flex-col gap-y-4'>
-            <div className='flex justify-between items-center'>
-                <h2>วิชาที่ลงทะเบียน</h2>
-                <div className='flex items-center gap-x-4'>
+        <div className='flex flex-col gap-y-4 p-2'>
+            <div className='flex items-center justify-between mr-4'>
+                <h2 className="flex gap-x-4 items-center text-xl font-bold">
+                    {course?.coursenameTH || ""}
+                </h2>
+                <div className='flex gap-x-4 items-center'>
                     <div className="text-success text-sm">
                         <span>{success}</span>
                     </div>
@@ -77,51 +90,107 @@ const DetailList:React.FC = () => {
                     </button>
                 </div>
             </div>
-            <div className="overflow-x-auto rounded-box border border-base-content/5 bg-base-100 max-h-[var(--tlistH)]">
-                <table className="table">
-                        {/* head */}
-                        <thead>
-                            <tr>
-                                <th>รหัสวิชา</th>
-                                <th>ชื่อวิชา (TH)</th>
-                                <th>ชื่อวิชา (EN)</th>
-                                <th>หน่วยกิต</th>
-                                <th>เกรด</th>
-                                <th>หมายเหตุ</th>
-                            </tr>
-                        </thead>
-                        <tbody className=''>
-                            {student?.subjects.map((subject:any) => {
-                                const subjectData = subjects.find((s) => s._id === subject.subjectId);
-                                return (
-                                    <tr key={subject.subjectId}>
-                                        <td>{subjectData?.subjectID}</td>
-                                        <td>{subjectData?.subjectnameTH}</td>
-                                        <td>{subjectData?.subjectnameEN}</td>
-                                        <td>{subjectData?.credits}</td>
-                                        <td>{subject.grade}</td>
-                                        <td>
-                                        <textarea
-                                            className="border-theme p-0.5 rounded-lg"
-                                            value={getDescription(subject.subjectId)}
-                                            onChange={(e) =>
-                                                setDetail(prev => ({
-                                                    ...prev,
-                                                    [subject.subjectId]: {
-                                                        description: e.target.value
-                                                    }
-                                                }))
-                                            }
-                                        />
-                                        </td>
-                                    </tr>
-                                )
+            
+            {!structure ? (
+                <div className="flex flex-col items-center justify-center gap-y-4 text-gray-500 p-4 border rounded-md">
+                    ยังไม่มีโครงสร้างหลักสูตร กรุณาเลือกหลักสูตรก่อน
+                </div>
+            ) : (
+                // show course name if there is Id same as course
+                
+                <div className='overflow-x-auto max-h-[var(--table)] scrollbar-hide'>
+                    {structure.categories.map(categoryItem => {
+                    const categoryDetail = categories.find(cat => cat._id === categoryItem.categoryId);
+
+                    let isFirstGroup = true;
+
+                    return (
+                        <div key={categoryItem.categoryId} className=" py-2 rounded-lg shadow overflow-x-auto">
+
+                            {categoryItem.groups.map(groupItem => {
+                                const groupDetail = groups.find(g => g._id === groupItem.groupId);
                                 
+
+                                return (
+                                    <div key={groupItem.groupId} className="mt-2 p-2">
+                                        {isFirstGroup && (
+                                            <h3 className="text-center text-lg font-semibold">
+                                                --- {categoryDetail?.catnameTH || "ไม่พบข้อมูล"} ---
+                                            </h3>
+                                        )}
+                                        {isFirstGroup = false}
+                                        <div className="overflow-x-auto mt-4 rounded-box border border-base-content/15 bg-base-100">
+                                            <table className="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th className='text-center' colSpan={7}>
+                                                            {groupDetail?.groupnameTH || "ไม่พบข้อมูล"}
+                                                        </th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>รหัสวิชา</th>
+                                                        <th>ชื่อวิชา (TH)</th>
+                                                        <th>ชื่อวิชา (EN)</th>
+                                                        <th>หน่วยกิต</th>
+                                                        <th>เกรด</th>
+                                                        <th>ปี/เทอม</th>
+                                                        <th>หมายเหตุ</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {groupItem.subjects.map(subjectItem => {
+                                                        const subjectDetail = subjects.find(s => s._id === subjectItem.subjectId);
+                                                        const studentSubject = studentSubjects.find((s: any) => s.subjectId === subjectItem.subjectId);
+                                                        return (
+                                                            <tr key={subjectItem.subjectId} className={
+                                                                studentSubject?.grade === 'F' 
+                                                                    ? "bg-error/15" 
+                                                                    : studentSubject?.grade === 'T' 
+                                                                        ? "bg-info/15" 
+                                                                    :  studentSubject ? "bg-success/15" : ""
+                                                            }>
+                                                                <td className='w-36'>{subjectDetail?.subjectID || "ไม่พบข้อมูล"}</td>
+                                                                <td className='w-80'>{subjectDetail?.subjectnameTH || "ไม่พบข้อมูล"}</td>
+                                                                <td className='w-80'>{subjectDetail?.subjectnameEN || "ไม่พบข้อมูล"}</td>
+                                                                <td className='w-24'>{subjectDetail?.credits || "ไม่พบข้อมูล"}</td>
+                                                                <td className='md:w-24'>
+                                                                    {studentSubject?.grade || '-'}
+                                                                </td>
+                                                                <td>
+                                                                    {studentSubject?.termandyear || '-'}
+                                                                </td>
+                                                                <td className='w-64'>
+                                                                    <textarea 
+                                                                        className='p-1 h-10 rounded-md border-theme w-full'
+                                                                        value={getDescription(subjectItem.subjectId)}
+                                                                        onChange={(e) => {
+                                                                            const description = e.target.value;
+                                                                            setDetail(prev => ({
+                                                                                ...prev,
+                                                                                [subjectItem.subjectId]: {
+                                                                                    ...prev[subjectItem.subjectId],
+                                                                                    description
+                                                                                }
+                                                                            }));
+                                                                        }}
+                                                                    ></textarea>
+                                                                </td>
+                                                            </tr>
+                                                        );
+                                                    })}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                );
                             })}
-                        </tbody>
-                    </table>
-            </div>
+                        </div>
+                    )
+                })}
+                </div>
+            )}
         </div>
+        
     )
 }
 

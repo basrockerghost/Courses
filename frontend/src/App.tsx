@@ -21,8 +21,8 @@ import Home from './components/teacherPage/Home/Home';
 import DetailHome from './components/teacherPage/Home/DetailHome';
 import Email from './components/ResetPage/Home/Home';
 import Password from './components/ResetPage/Home/ResetHome';
-// import PublicRoute from './components/CheckRoute/PublicRoute';
-// import ProtectedRoute from './components/CheckRoute/ProtectedRoute';
+import PublicRoute from './components/CheckRoute/PublicRoute';
+import ProtectedRoute from './components/CheckRoute/ProtectedRoute';
 
 
 function App() {
@@ -34,14 +34,13 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path='/login' element={<Login/>}></Route>
-        <Route path='/register' element={<Register/>}></Route>
-        <Route path='/home' element={<StdHome/>}></Route>
-        <Route path='/homeT' element={<Home/>}></Route>
-        <Route path='/homeT/student' element={<DetailHome/>} />
+        {/* <Route path='/login' element={<Login/>}></Route>
+        <Route path='/register' element={<Register/>}></Route> */}
+        {/* <Route path='/home' element={<StdHome/>}></Route>
+        <Route path='/homeT' element={<Home/>}></Route> */}
         <Route path='/request-reset' element={<Email/>} />
         <Route path='/reset-password' element={<Password/>} />
-        {/* <Route 
+        <Route 
           path='/login' 
           element={
             <PublicRoute>
@@ -61,20 +60,33 @@ function App() {
         <Route 
           path='/home' 
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={['student']}>
               <StdHome/>
             </ProtectedRoute>
           } >
         </Route>
         <Route 
+          path='/homeT' 
+          element={
+            <ProtectedRoute allowedRoles={['teacher']}>
+              <Home/>
+            </ProtectedRoute>
+          } >
+        </Route>
+        <Route path='/homeT/student'
+          element={
+            <ProtectedRoute allowedRoles={['teacher']}>
+              <DetailHome/>
+            </ProtectedRoute>
+          } />
+        <Route 
           path='/' 
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={['admin']}>
               <AdminHome/>
             </ProtectedRoute>
           } 
-        > */}
-        <Route path='/' element={<AdminHome/>}>
+        >
           <Route path='/dashboard' element={<Dashboard/>} ></Route>
           <Route path='/teachers' element={<Teacher/>} ></Route>
           <Route path='/teacher' element={<Tprofile/>} ></Route>

@@ -77,7 +77,10 @@ const UserSchema = new mongoose.Schema({
             grade: {
                 type: String,
                 enum: ['A', 'B+', 'B', 'C+', 'C', 'D+', 'D', 'F', 'T'],
-                default: null
+                default: null,
+            },
+            termandyear: {
+                type: String,
             },
             description: {
                 type: String,

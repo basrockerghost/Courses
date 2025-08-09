@@ -19,7 +19,7 @@ const Cedit:React.FC<CEditProps> = ({modalRef, course}) => {
         description: course.description,
     });
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         setData({ ...data, [e.target.id]: e.target.value });
     };
 
@@ -44,9 +44,43 @@ const Cedit:React.FC<CEditProps> = ({modalRef, course}) => {
                     <label htmlFor="lastname">ชื่อหลักสูตร (en)</label>
                     <input type="text" id='coursenameEN' className='input input-theme w-full border-theme' value={data.coursenameEN} onChange={handleChange} />
                     <label htmlFor="year">ปีที่เริ่ม</label>
-                    <input type="number" id='courseStart' className='input input-theme w-full border-theme' value={data.courseStart} onChange={handleChange} />
+                    <select
+                        id="courseStart"
+                        className="select w-full border-theme"
+                        value={data.courseStart}
+                        onChange={handleChange}
+                        required
+                        >
+                        <option value="" disabled={true}>เลือกปี</option>
+                        {Array.from({ length: 50 }, (_, i) => {
+                            const year = 2560 + i;
+                            return (
+                            <option key={year} value={year}>
+                                {year}
+                            </option>
+                            );
+                        })}
+
+                    </select>
                     <label htmlFor="courseEnd">ปีสิ้นสุด</label>
-                    <input type="number" id='courseEnd' className='input input-theme w-full border-theme' value={data.courseEnd} onChange={handleChange} />
+                    <select
+                        id="courseEnd"
+                        className="select w-full border-theme"
+                        value={data.courseEnd}
+                        onChange={handleChange}
+                        required
+                        >
+                        <option value="" disabled={true}>เลือกปี</option>
+                        {Array.from({ length: 50 }, (_, i) => {
+                            const year = 2560 + i;
+                            return (
+                            <option key={year} value={year}>
+                                {year}
+                            </option>
+                            );
+                        })}
+                    </select>
+                    
                     <label htmlFor="description">รายละเอียด</label>
                     <textarea id='description' className='textarea textarea-theme w-full border-theme' value={data.description} onChange={handleChange} />
 

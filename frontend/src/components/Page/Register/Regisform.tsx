@@ -1,10 +1,7 @@
 import axios from 'axios'
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom';
 
 const Regisform:React.FC = () => {
-
-    const navigate = useNavigate();
 
     const[data, setData] = useState({
         personalID: '',
@@ -40,7 +37,7 @@ const Regisform:React.FC = () => {
                 password: '',
                 con_password: ''
             });
-            navigate('/login');
+            // navigate('/login');
         } catch (err: any) {
             setError(err.response?.data?.message || 'Registration failed');
         } finally {

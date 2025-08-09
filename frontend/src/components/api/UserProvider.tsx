@@ -11,19 +11,19 @@ interface User {
   role: "student" | "teacher" | "admin";
 }
 
-interface UserContextType {
-  users: User[];
-  loading: boolean;
-  error: string | null;
-  success: string | null;
-  addUser: (newUser: Omit<User, "_id">) => Promise<void>;
-  deleteUser: (id:string) => Promise<void>;
-  updateUser: (id: string, updateData: Partial<User>) => Promise<void>
-  selectCurriculum: (id: string, curriculumId: string) => Promise<void>;
-  addSubjectToUser: (userId: string, subjectId: string, description: string) => Promise<void>;
-  updateSubjectGrade: (userId: string, subjectId: string, grade: string) => Promise<void>;
-  removeSubjectFromUser: (userId: string, subjectId: string) => Promise<void>;
-}
+// interface UserContextType {
+//   users: User[];
+//   loading: boolean;
+//   error: string | null;
+//   success: string | null;
+//   addUser: (newUser: Omit<User, "_id">) => Promise<void>;
+//   deleteUser: (id:string) => Promise<void>;
+//   updateUser: (id: string, updateData: Partial<User>) => Promise<void>
+//   selectCurriculum: (id: string, curriculumId: string) => Promise<void>;
+//   addSubjectToUser: (userId: string, subjectId: string, description: string) => Promise<void>;
+//   updateSubjectGrade: (userId: string, subjectId: string, grade: string) => Promise<void>;
+//   removeSubjectFromUser: (userId: string, subjectId: string) => Promise<void>;
+// }
 
 // const UserContext = createContext<UserContextType | undefined>(undefined);
 const UserContext = createContext<any>(null);
@@ -90,10 +90,29 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       setUsers(users.map(user => user._id === userId ? response.data.user : user));
       setSuccess("Subject added successfully");
       fetchUsers();
+      // setUser(response.data.user);
+      // localStorage.setItem('user', JSON.stringify(response.data.user));
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Failed to add subject");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // add term and year
+  const addTermAndYear = async (userId: string, subjectId: string, termandyear: string) => {
+    setLoading(true);
+    setError(null);
+    setSuccess(null);
+    try {
+      const response = await api.patch(`/add/user/${userId}/subject/${subjectId}/termandyear`, { termandyear });
+      setUsers(users.map(user => user._id === userId ? response.data.user : user));
+      setSuccess("Term and year added successfully");
+      fetchUsers();
       setUser(response.data.user);
       localStorage.setItem('user', JSON.stringify(response.data.user));
     } catch (err: any) {
-      setError(err.response?.data?.message || "Failed to add subject");
+      setError(err.response?.data?.message || "Failed to add term and year");
     } finally {
       setLoading(false);
     }
@@ -223,9 +242,6 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       const response = await api.patch(`/edit/user/${id}`, updateData);
       setUsers(users.map((user) => (user._id === id ? response.data : user)));
       setSuccess("User updated successfully");
-      fetchUsers();
-      setUser(response.data.user);
-      localStorage.setItem('user', JSON.stringify(response.data));
     } catch (err: any) {
       setError(err.response?.data?.message || "Failed to update user");
     } finally {
@@ -233,7 +249,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  return <UserContext.Provider value={{ users, user, setUser, loading, error, success, selectCurriculum, addSubjectToUser, addStdToTeacher, updateSubjectGrade, removeSubjectFromUser, addUser, requestReset, resetpassword, deleteUser, updateUser }}>{children}</UserContext.Provider>;
+  return <UserContext.Provider value={{ users, user, setUser, loading, error, success, selectCurriculum, addTermAndYear, addSubjectToUser, addStdToTeacher, updateSubjectGrade, removeSubjectFromUser, addUser, requestReset, resetpassword, deleteUser, updateUser }}>{children}</UserContext.Provider>;
 };
 
 export const useUserContext = () => {

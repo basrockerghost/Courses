@@ -13,16 +13,16 @@ const Info:React.FC = () => {
     return (
         <div>
             <h1 className="text-xl font-bold mb-2">Student Info</h1>
-            <div className='flex gap-x-12'>
-                <div>
-                    <p><strong>ID:</strong> {student.personalID}</p>
-                    <p><strong>Name:</strong> {student.firstname} {student.lastname}</p>
-                    <p><strong>Role:</strong> {student.role}</p>
+            <div className='flex flex-col gap-y-2'>
+                <div className='flex gap-x-8'>
+                    <p><strong>รหัสนักศึกษา (ID) :</strong> {student.personalID}</p>
+                    <p><strong>ชื่อ-นามสกุล (Name-Surname) :</strong> {student.firstname} {student.lastname}</p>
                 </div>
-                <div className='flex flex-col justify-end'>
-                    <p><strong>Credits:</strong> {student.totalCredits}</p>
-                    <p><strong>GPA:</strong> {student.GPA}</p>
+                <div className='flex gap-x-8'>
+                    <p><strong>หน่วยกิต (Credits) :</strong> {student.totalCredits}</p>
+                    <p><strong>GPA :</strong> {student.GPA}</p>
                 </div>
+                <p><strong>ตำแหน่ง (Role) :</strong> {student.role}</p>
             </div>
         </div>
     )

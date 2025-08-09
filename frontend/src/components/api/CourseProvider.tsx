@@ -19,6 +19,7 @@ interface CourseContextType {
     addCourse: (newCourse: Omit<Course, "_id">) => Promise<void>;
     updateCourse: (id: string, updatedCourse: Partial<Course>) => Promise<void>;
     deleteCourse: (id: string) => Promise<void>;
+    generateCSId: () => Promise<string>;
 }
 
 const CourseContext = createContext<CourseContextType | undefined>(undefined);
@@ -46,6 +47,17 @@ export const CourseProvider = ({ children } : { children : React.ReactNode }) =>
             setLoading(false);
         }
     };
+
+    const generateCSId = async (): Promise<string> => {
+        try {
+            const response = await api.get("/get/generate-courseid");
+            return response.data.CSId;
+        } catch (err: any) {
+            setError(err.response?.data?.message || "Failed to generate CSId");
+            return ""; // หรือค่าเริ่มต้นอื่น ๆ ที่เหมาะสม
+        }
+    };
+    
 
     const addCourse = async (newCourse: Omit<Course, "_id">) => {
         setLoading(true);
@@ -95,7 +107,7 @@ export const CourseProvider = ({ children } : { children : React.ReactNode }) =>
         }
     };
     
-    return <CourseContext.Provider value={{ courses, loading, error, success, addCourse, deleteCourse, updateCourse }}>{children}</CourseContext.Provider>;
+    return <CourseContext.Provider value={{ courses, generateCSId, loading, error, success, addCourse, deleteCourse, updateCourse }}>{children}</CourseContext.Provider>;
 }
 
 export const useCourseContext = () => {

@@ -2,18 +2,18 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../../models/User/User');
+const nodemailer = require('nodemailer')
 
 const router = express.Router();
 
-// const transporter = nodemailer.createTransport({
-//     host: 'smtp.gmail.com',
-//     port: 465,
-//     secure: true,
-//     auth: {
-//         user: process.env.EMAIL_USER,
-//         pass: process.env.EMAIL_PASS,
-//     }
-// })
+const transport = nodemailer.createTransport({
+    host: "live.smtp.mailtrap.io",
+    port: 587,
+    auth: {
+      user: "api",
+      pass: "f1efe6bd495ff596618d824b5165b965"
+    }
+});
 
 // registration
 router.post('/register', async (req, res) => {
@@ -161,6 +161,62 @@ router.post('/reset-password', async (req, res) => {
     }
 });
 
+// router.post('/request-reset', async (req, res) => {
+//     try {
+//         const { email } = req.body;
 
+//         if (!email) {
+//             return res.status(400).json({ message: 'Email is required' });
+//         }
+        
+//         const user = User.findOne({ email });
+
+//         if(!user) {
+//             return res.status(404).json({ message: 'User not found' });
+//         }
+
+//         const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '15m' });
+
+//         const resetLink = `http://localhost:5173/reset-password/${token}`; // frontend URL ของคุณ
+
+//         // ส่งอีเมล
+//         await transport.sendMail({
+//             from: 'noreply@example.com',
+//             to: email,
+//             subject: 'Password Reset',
+//             text: "Here link to reset",
+//             html: `<p>Click <a href="${resetLink}">here</a> to reset your password.</p>`,
+//         });
+        
+
+//         res.status(200).json({ message: 'If this email exists, a reset link will be sent' });        
+
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ message: 'Server error', error });
+//     }
+// });
+
+// router.post('/reset-password/:token', async (req, res) => {
+//     try {
+//         const { token } = req.params;
+//         const { newPassword } = req.body;
+
+//         const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+//         const user = await User.findById(decoded.userId);
+//         if (!user) return res.status(404).json({ message: 'User not found' });
+
+//         const hashed = await bcrypt.hash(newPassword, 10);
+//         user.password = hashed;
+//         await user.save();
+
+//         res.status(200).json({ message: 'Password reset successful' });
+
+//     } catch (error) {
+//         console.error(error);
+//         res.status(400).json({ message: 'Invalid or expired token', error });
+//     }
+// });
 
 module.exports = router;

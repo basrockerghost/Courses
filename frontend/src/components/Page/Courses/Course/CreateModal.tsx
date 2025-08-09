@@ -1,12 +1,11 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useCourseContext } from '../../../api/CourseProvider';
 
-const CreateModal:React.FC = () => {
+const CreateModal = ({ setSearchText }: { setSearchText: (text: string) => void }) => {
 
     const modalRef = useRef<HTMLDialogElement | null>(null);
 
-    const { addCourse, loading, error, success } = useCourseContext();
-    
+    const { generateCSId, addCourse, loading, error, success } = useCourseContext();
 
     const [formData, setFormData] = useState({
         CSId: "",
@@ -46,6 +45,14 @@ const CreateModal:React.FC = () => {
         });
     };
 
+    useEffect(() => {
+        const generateId = async () => {
+            const newCSId = await generateCSId();
+            setFormData(prev => ({ ...prev, CSId: newCSId }));
+        };
+        generateId();
+    }, []);
+
     const CreateCourseModal = () => {
         modalRef.current?.showModal();
     };
@@ -54,7 +61,12 @@ const CreateModal:React.FC = () => {
         <div className='flex flex-rows gap-x-4 items-center'>
             <label className="input input-sm">
                 <svg className="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g strokeLinejoin="round" strokeLinecap="round" strokeWidth="2.5" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></g></svg>
-                <input type="search" className="grow" placeholder="Search" />
+                <input
+                    type="search"
+                    className="grow"
+                    placeholder="Search"
+                    onChange={(e) => setSearchText(e.target.value)}
+                />
             </label>
             <button className="btn bg-blue-400 text-white rounded-2xl" onClick={CreateCourseModal}>Create +</button>
             <dialog ref={modalRef} id="course" className="modal">
@@ -66,7 +78,9 @@ const CreateModal:React.FC = () => {
                     <h3 className="font-bold text-lg">เพิ่มหลักสูตร</h3>
                     <form className='flex flex-col gap-y-2 mt-4' onSubmit={handleAdd} >
                         <label>รหัสหลักสูตร</label>
-                        <input type="text" id='CSId' className='input input-neutral w-full border-theme ' value={formData.CSId} placeholder='Ex. CS-0000' onChange={handleChange} required />
+                        {/* <input type="text" id='CSId' className='input input-neutral w-full border-theme ' value={formData.CSId} placeholder='Ex. CS-xxxx' readOnly required /> */}
+                        <input type="text" id='CSId' className='input input-neutral w-full border-theme ' value={formData.CSId} placeholder='Ex. CS-xxxx' onChange={handleChange} required />
+                        
                         <label>ชื่อหลักสูตร (th)</label>
                         <input type="text" id='coursenameTH' className='input input-neutral w-full border-theme ' value={formData.coursenameTH} placeholder='ไทยเท่านั้น' onChange={(e) => {
                             const thOnly = e.target.value.replace(/[^ก-๙\s]/g, "");

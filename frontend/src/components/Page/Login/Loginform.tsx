@@ -73,7 +73,7 @@ const Loginform:React.FC = () => {
             <input type="password" id='password' className="input border-theme w-full" placeholder="Password" value={data.password} onChange={handleChange} required />
 
             <div className='flex items-center justify-between mt-2'>
-                <a href="/request-reset" className='link link-hover'>forget password</a>
+                <a href="/reset-password" className='link link-hover'>forget password</a>
                 <a href="/register" className='link link-hover'>create account</a>
             </div>
 

@@ -4,7 +4,7 @@ import { useSubjectContext } from '../../../api/SubjectProvider';
 import { useUserContext } from '../../../api/UserProvider';
 // import Sdropmenu from './Sdropmenu'
 
-const Sprolist:React.FC = () => {
+const Sprolist:React.FC<{ searchText: string }> = ({ searchText }) => {
 
     const location = useLocation();
     const student = location.state?.student;
@@ -58,6 +58,18 @@ const Sprolist:React.FC = () => {
         }
     };
 
+    const filterSubjects = (searchText: string) => {
+        if (!searchText) return studentSubjects;
+        return studentSubjects.filter((subjectItem: any) => {
+            const subjectDetail = subjects.find(s => s._id === subjectItem.subjectId);
+            return (
+                subjectDetail?.subjectID.toLowerCase().includes(searchText.toLowerCase()) ||
+                subjectDetail?.subjectnameTH.toLowerCase().includes(searchText.toLowerCase()) ||
+                subjectDetail?.subjectnameEN.toLowerCase().includes(searchText.toLowerCase())
+            );
+        });
+    };
+
     return (
         <div className='flex flex-col gap-y-4'>
             <div className='flex justify-between items-center'>
@@ -84,35 +96,34 @@ const Sprolist:React.FC = () => {
                             <th>ชื่อวิชา (EN)</th>
                             <th>หน่วยกิต</th>
                             <th>เกรด</th>
+                            <th>ปี/เทอม</th>
                             <th>หมายเหตุ</th>
                         </tr>
                     </thead>
                     <tbody className=''>
-                        {studentSubjects.map((subjectItem: any) => {
+                        {filterSubjects(searchText).map((subjectItem: any) => {
                             const subjectDetail = subjects.find(s => s._id === subjectItem.subjectId);
-                            return (
+                            return subjectDetail ? (
                                 <tr key={subjectItem.subjectId}>
-                                    <td className='w-36'>{subjectDetail?.subjectID || "ไม่พบข้อมูล"}</td>
-                                    <td className='w-80'>{subjectDetail?.subjectnameTH || "ไม่พบข้อมูล"}</td>
-                                    <td className='w-80'>{subjectDetail?.subjectnameEN || "ไม่พบข้อมูล"}</td>
-                                    <td className='w-24'>{subjectDetail?.credits || "ไม่พบข้อมูล"}</td>
-                                    <td className='w-24'>{subjectItem.grade || "ไม่พบข้อมูล"}</td>
-                                    <td className='w-24'>
-                                    <textarea
-                                        className="border-theme p-0.5 rounded-lg"
-                                        value={getDescription(subjectItem.subjectId)}
-                                        onChange={(e) =>
-                                            setDetail(prev => ({
-                                                ...prev,
-                                                [subjectItem.subjectId]: {
-                                                    description: e.target.value
-                                                }
-                                            }))
-                                        }
-                                    />
+                                    <td>{subjectDetail.subjectID}</td>
+                                    <td>{subjectDetail.subjectnameTH}</td>
+                                    <td>{subjectDetail.subjectnameEN}</td>
+                                    <td>{subjectDetail.credits}</td>
+                                    <td>{subjectItem.grade || '-'}</td>
+                                    <td>{subjectItem.termandyear || '-'}</td>
+                                    <td>
+                                        <textarea 
+                                            placeholder="รายละเอียด" 
+                                            className="input input-bordered input-sm w-full max-w-xs border-theme" 
+                                            value={getDescription(subjectItem.subjectId)}
+                                            onChange={(e) => setDetail({
+                                                ...detail,
+                                                [subjectItem.subjectId]: { description: e.target.value }
+                                            })}
+                                        />
                                     </td>
                                 </tr>
-                            );
+                            ) : <p>No subject found</p>;
                         })}
                     </tbody>
                 </table>

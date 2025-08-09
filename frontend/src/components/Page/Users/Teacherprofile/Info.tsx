@@ -11,11 +11,13 @@ const Info: React.FC = () => {
     }
 
     return (
-        <div>
+        <div >
             <h1 className="text-xl font-bold mb-2">Teacher Info</h1>
-            <p><strong>ID:</strong> {teacher.personalID}</p>
-            <p><strong>Name:</strong> {teacher.firstname} {teacher.lastname}</p>
-            <p><strong>Role:</strong> {teacher.role}</p>
+            <div className='flex flex-col gap-y-2'>
+                <p><strong>รหัสบุคลากร (ID) :</strong> {teacher.personalID}</p>
+                <p><strong>ชื่อ-นามสกุล (Name-Surname) :</strong> {teacher.firstname} {teacher.lastname}</p>
+                <p><strong>ตำแหน่ง (Role) :</strong> {teacher.role}</p>
+            </div>
         </div>
     )
 }

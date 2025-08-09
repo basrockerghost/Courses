@@ -1,14 +1,29 @@
-// import React from 'react';
-// import { Navigate } from 'react-router-dom';
+import React from 'react';
+import { Navigate } from 'react-router-dom';
 
-// const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-//     const token = localStorage.getItem('token');
+interface ProtectedRouteProps {
+    children: React.ReactNode;
+    allowedRoles: string[];
+}
 
-//     if (!token) {
-//         return <Navigate to="/login" replace />;
-//     }
+const ProtectedRoute:React.FC<ProtectedRouteProps> = ({ children, allowedRoles }) => {
+    const token = localStorage.getItem('token');
+    const user = localStorage.getItem('user');
 
-//     return <>{children}</>;
-// };
+    if (!token || !user) {
+        return <Navigate to="/login" replace />;
+    }
 
-// export default ProtectedRoute
+    const parsedUser = JSON.parse(user);
+
+    if (allowedRoles && !allowedRoles.includes(parsedUser.role)) {
+        if (parsedUser.role === 'admin') return <Navigate to="/dashboard" replace />;
+        if (parsedUser.role === 'teacher') return <Navigate to="/homeT" replace />;
+        if (parsedUser.role === 'student') return <Navigate to="/home" replace />;
+        return <Navigate to="/login" replace />;
+    }
+
+    return <>{children}</>;
+};
+
+export default ProtectedRoute

@@ -1,11 +1,13 @@
-import React from 'react'
-import Tproboard from './Tproboard'
+import React, { useState } from 'react'
 import Tpromenu from './Tpromenu'
 import Tprolist from './Tprolist'
 import Info from './Info'
 import AddStd from './Modal/AddStd'
 
 const Tprofile:React.FC = () => {
+
+    const [searchText, setSearchText] = useState('');
+
     return (
         <div className='w-full pt-6 px-6 bg-base-100'>
             <div className='flex flex-col gap-y-4'>
@@ -14,8 +16,8 @@ const Tprofile:React.FC = () => {
                     <AddStd/>
                 </div>
                 <div className='flex flex-col gap-y-4'>
-                    <Tpromenu/>
-                    <Tprolist/>
+                    <Tpromenu setSearchText={setSearchText} />
+                    <Tprolist searchText={searchText} />
                 </div>
             </div>
         </div>

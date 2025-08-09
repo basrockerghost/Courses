@@ -65,17 +65,12 @@ const ListCurtail:React.FC = () => {
             {structure?.categories.map(categoryItem => {
                 const categoryDetail = categories.find(cat => cat._id === categoryItem.categoryId);
                 let isFirstGroup = true;
+                
 
                 return (
                     <div key={categoryItem.categoryId} className="overflow-x-auto">
-
-                        {categoryItem.groups.map(groupItem => {
-                            const groupDetail = groups.find(g => g._id === groupItem.groupId);
-
-                            return (
-                                <div key={groupItem.groupId}>
                                     {isFirstGroup && (
-                                        <div className='flex items-center gap-x-4 justify-center mb-4'>
+                                        <div className='flex items-center gap-x-4 justify-center mb-4'>                    
                                             <h3 className="text-center text-lg font-semibold">
                                                 --- {categoryDetail?.catnameTH || "ไม่พบข้อมูล"} ---
                                             </h3>
@@ -88,6 +83,15 @@ const ListCurtail:React.FC = () => {
                                         </div>
                                     )}
                                     {isFirstGroup = false}
+
+                        {categoryItem.groups.map(groupItem => {
+                            const groupDetail = groups.find(g => g._id === groupItem.groupId);
+
+                            return (
+                                <div key={groupItem.groupId}>
+                                    
+                                        
+                                    
                                     <div className="overflow-x-auto mt-4 rounded-box border border-base-content/5 bg-base-100">
                                         <table className="table">
                                                 <thead>

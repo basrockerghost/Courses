@@ -2,7 +2,7 @@ import React from 'react'
 import { useUserContext } from '../../../api/UserProvider'
 import { useLocation, useNavigate } from 'react-router-dom';
 
-const Tprolist:React.FC = () => {
+const Tprolist:React.FC<{ searchText: string }> = ({ searchText }) => {
 
     const location = useLocation();
     const teacher = location.state?.teacher;
@@ -13,6 +13,18 @@ const Tprolist:React.FC = () => {
     const handleClick = (student: any) => {
         navigate('/student', {state: {student}})
     }
+    
+    const filterStudents = (searchText: string) => {
+        if (!searchText) return teacher.students;
+        return teacher.students.filter((student: any) => {
+            const studentDetail = users.find((s: any) => s._id === student.studentsId);
+            return (
+                studentDetail?.personalID.toLowerCase().includes(searchText.toLowerCase()) ||
+                studentDetail?.firstname.toLowerCase().includes(searchText.toLowerCase()) ||
+                studentDetail?.lastname.toLowerCase().includes(searchText.toLowerCase())
+            );
+        });
+    };
 
     return (
         <div className="overflow-x-visible rounded-box border border-base-content/5 bg-base-100 max-h-[var(--tlistH)]">
@@ -26,18 +38,23 @@ const Tprolist:React.FC = () => {
                     </tr>
                 </thead>
                 <tbody>
-                {teacher.students
-                    .map((s: any) => users.find((u: any) => u._id === s.studentsId))
-                    .filter((student: any) => student !== undefined)
-                    .map((student: any) => (
-                        <tr key={student._id} className='cursor-pointer hover:bg-base-200' onClick={() => handleClick(student)}>
-                            <td>{student.personalID}</td>
-                            <td>{student.firstname} {student.lastname}</td>
-                            <td>{student.totalCredits}</td>
-                            <td>{student.GPA}</td>
+                    {teacher.students && filterStudents(searchText).length > 0 ? (
+                        filterStudents(searchText).map((student: any) => {
+                            const studentDetail = users.find((s: any) => s._id === student.studentsId);
+                            return studentDetail ? (
+                                <tr onClick={() => handleClick(studentDetail)} className='hover:cursor-pointer hover:text-info' key={studentDetail._id}>
+                                    <td>{studentDetail.personalID}</td>
+                                    <td>{studentDetail.firstname} {studentDetail.lastname}</td>
+                                    <td>{studentDetail.totalCredits}</td>
+                                    <td>{studentDetail.GPA}</td>
+                                </tr>
+                            ) : null;
+                        })
+                    ) : (
+                        <tr>
+                            <td colSpan={4} className="text-center py-4">ไม่พบข้อมูล</td>
                         </tr>
-                    ))
-                }
+                    )}
                 </tbody>
             </table>
         </div>

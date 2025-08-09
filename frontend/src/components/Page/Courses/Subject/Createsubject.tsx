@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react'
 import { useSubjectContext } from '../../../api/SubjectProvider';
 
-const Createsubject:React.FC = () => {
+const Createsubject:React.FC<{setSearchText: (text: string) => void}> = ({ setSearchText }) => {
 
     const modalRef = useRef<HTMLDialogElement | null>(null);
     
@@ -49,7 +49,12 @@ const Createsubject:React.FC = () => {
         <div className='flex flex-rows gap-x-4 items-center'>
             <label className="input input-sm">
                 <svg className="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g strokeLinejoin="round" strokeLinecap="round" strokeWidth="2.5" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></g></svg>
-                <input type="search" className="grow" placeholder="Search" />
+                <input
+                    type="search"
+                    className="grow"
+                    placeholder="Search"
+                    onChange={(e) => setSearchText(e.target.value)}
+                />
             </label>
             <button className="btn bg-blue-400 text-white rounded-2xl" onClick={CreateSubjectModal}>Create +</button>
             <dialog ref={modalRef} id="subject" className="modal">
@@ -61,7 +66,7 @@ const Createsubject:React.FC = () => {
                     <h3 className="font-bold text-lg">เพิ่มวิชา</h3>
                     <form className='flex flex-col gap-y-2 mt-4' onSubmit={handleAdd}>
                         <label htmlFor="">รหัสวิชา</label>
-                        <input type="text" id='subjectID' className='input input-neutral w-full border-theme ' value={data.subjectID} placeholder='Ex. 000-000' onChange={(e) => {
+                        <input type="text" id='subjectID' className='input input-neutral w-full border-theme ' value={data.subjectID} placeholder='Ex. xxx-xxx' onChange={(e) => {
                             let value = e.target.value.replace(/\D/g, ""); // ลบทุกอย่างที่ไม่ใช่ตัวเลข
                             if (value.length > 6) value = value.slice(0, 6); // จำกัดความยาวไม่เกิน 6 ตัว
                             const formatted =

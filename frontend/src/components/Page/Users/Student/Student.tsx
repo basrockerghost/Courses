@@ -1,10 +1,13 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Sboard from './Sboard'
 import Smenulist from './Smenulist'
 import Slist from './Slist'
 import Saddmodal from './AddStudent/Saddmodal'
 
 const Student:React.FC = () => {
+
+    const [searchText, setSearchText] = useState('');
+
     return (
         <div className='w-full pt-6 px-6 bg-base-100'>
             <div className='flex flex-col gap-y-2'>
@@ -16,8 +19,8 @@ const Student:React.FC = () => {
                     <Sboard/>
                 </div>
                 <div className='flex flex-col gap-y-4'>
-                    <Smenulist/>
-                    <Slist/>
+                    <Smenulist setSearchText={setSearchText} />
+                    <Slist searchText={searchText} />
                 </div>
             </div>
         </div>

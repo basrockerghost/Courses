@@ -1,26 +1,44 @@
 import React from 'react'
+import { useUserContext } from '../../api/UserProvider'
+import { useNavigate } from 'react-router-dom';
 
 const Notiboard:React.FC = () => {
+
+    const {users} = useUserContext();
+    const student = users.filter((user: any) => user.role === 'student')
+    const navigate = useNavigate();
+    const handleClick = (student: any) => {
+        navigate('/student', {state: {student}})
+    }
+
     return (
-        <ul className="list bg-base-100 rounded-box shadow-md">
-  
-            <li className="p-4 pb-2 text-xs opacity-60 tracking-wide">Student</li>
-            
-            <li className="list-row hover:bg-base-200">
-                <div className="flex items-center gap-x-4">
-                    <div className="avatar">
-                        <div className="w-10 rounded-full">
-                            <img src="https://daisyui.com/images/stock/photo-1534528741727-eadc9d34d4fa.jpg" />
-                        </div>
-                    </div>
-                    <div>
-                        <p className="font-semibold">Student name</p>
-                        <p className="text-xs opacity-60">StudentID</p>
-                    </div>
-                </div>
-            </li>
-            
-        </ul>
+        <div className="overflow-x-auto shadow-md sm:rounded-lg mt-6">
+            <table className="table">
+                {/* head */}
+                <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>ชื่อ-นามสกุล</th>
+                    <th>จำนวนรายวิชาที่ลงทะเบียน</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {student.length > 0 ? (
+                        student.map((student: any) => (
+                            <tr key={student._id} className="hover:text-info cursor-pointer" onClick={() => handleClick(student)}>
+                                <td>{student.personalID}</td>
+                                <td>{student.firstname} {student.lastname}</td>
+                                <td>{student.subjects.length}</td>
+                            </tr>
+                        ))
+                    ) : (
+                        <tr>
+                            <td colSpan={4} className="text-center">No Student</td>
+                        </tr>
+                    )}
+                </tbody>
+            </table>
+        </div>
     )
 }
 
